@@ -1,0 +1,22 @@
+{
+  "name": "polymarket-trade-engine",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Lifecycle-based trading engine for Polymarket 5-minute BTC up/down markets. Skeleton inspired by the blueprint described at https://x.com/aleiahlock/status/2052400685468057632 and the open-source reference at https://github.com/KaustubhPatange/polymarket-trade-engine.",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "simulate": "tsx src/index.ts simulate",
+    "simulate:late-entry": "tsx src/index.ts simulate --strategy late-entry",
+    "simulate:hold": "tsx src/index.ts simulate --strategy hold-to-resolution"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "@types/node": "^22.9.0"
+  }
+}
