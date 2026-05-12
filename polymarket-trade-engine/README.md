@@ -123,24 +123,74 @@ The two reference strategies show the contrast the article highlights:
 
 ## Going from paper to real
 
-`PaperClobClient` implements `ClobClient`. To trade real Polymarket markets,
-write a `RealClobClient` against
-[`@polymarket/clob-client`](https://github.com/Polymarket/clob-client) and
-swap it in. Same for the price feed: replace `SimulatedFeed` with a real one
-that pulls from Binance, Coinbase, and Chainlink (the three sources the
-article uses to detect cross-source divergence).
+There are two real-component slots wired up behind feature flags, both off by
+default:
 
-Things you **will** need to add before real trading:
+| Slot       | Default      | Real option        | How to enable                       |
+|------------|--------------|--------------------|-------------------------------------|
+| Price feed | `simulated`  | `binance` (live WS)| `--feed binance` or `POLYMARKET_FEED=binance`           |
+| CLOB       | `paper`      | `polymarket` (stub)| `--clob polymarket` or `POLYMARKET_CLOB=polymarket`     |
 
-- Wallet management and EIP-712 signing for Polymarket orders.
-- Real on-chain settlement watching (the paper client just uses timers).
-- Risk limits (max position size, daily loss limit, kill switch).
+### BinanceFeed (already functional)
+
+```bash
+npm run simulate -- --feed binance --strategy hold-to-resolution --windows 2 --window-seconds 60
+```
+
+This connects to Binance's public spot trade websocket — no API key required.
+The feed auto-reconnects with exponential backoff. Cross-source divergence
+needs at least one more source (Coinbase, Chainlink); add another `PriceFeed`
+implementation and fan-in.
+
+### PolymarketClobClient (stub, opt-in)
+
+The Polymarket client has two modes, both gated:
+
+```bash
+# Dry-run: real config flow, fake orders. Safe to leave running.
+POLYMARKET_CLOB=polymarket POLYMARKET_MODE=dry-run \
+  npm run simulate -- --feed binance --windows 2
+
+# Live: explicitly throws "not implemented" because actually sending orders
+# requires you to fill in the @polymarket/clob-client integration yourself.
+POLYMARKET_CLOB=polymarket \
+  POLYMARKET_MODE=live POLYMARKET_LIVE=1 \
+  POLYMARKET_PRIVATE_KEY=0x... \
+  POLYMARKET_API_KEY=... POLYMARKET_API_SECRET=... POLYMARKET_API_PASSPHRASE=... \
+  npm run simulate -- --feed binance --windows 2
+```
+
+Safety controls baked in:
+
+- `POLYMARKET_MODE` defaults to `dry-run`; live needs both `MODE=live` **and**
+  `POLYMARKET_LIVE=1` to start.
+- `POLYMARKET_MAX_NOTIONAL` (default `25` USDC) is a hard ceiling on a single
+  order's notional, enforced before any network call.
+- `live` mode currently throws `notImplemented` for every method — by
+  design. Enabling real trading requires you to:
+  1. `npm install @polymarket/clob-client ethers`
+  2. Replace each `notImplemented(...)` in `PolymarketClobClient.ts` with the
+     real `@polymarket/clob-client` call.
+  3. Pre-approve USDC + CTF spending on the CTF Exchange contract from your
+     wallet, off-engine.
+  4. Test on Polymarket's Amoy testnet before mainnet.
+
+This is deliberate friction. The other items on the path to live trading
+(real market-id discovery via Gamma API, on-chain settlement watching,
+crash-recovery persistence, daily loss-limit kill switch) are still TODO and
+should land before any real money moves.
+
+### What's still missing for real trading
+
+- Wallet management and EIP-712 signing wired to the CLOB client.
+- Polymarket Gamma API queries to resolve the actual 5-minute market IDs and
+  token IDs per window (currently the Engine fabricates them locally).
+- Real order-book subscription (the paper client and the stub both fake
+  books).
 - A persistence layer so a crash mid-window doesn't lose state.
+- Daily loss limit + kill switch at the engine level.
 - Backtesting against captured historical order book data, not just a random
   walk feed.
-
-None of those are wired up here. The point of this repo is the *architecture*
-— the part that's the same whether you're paper-trading or trading real money.
 
 ## References
 

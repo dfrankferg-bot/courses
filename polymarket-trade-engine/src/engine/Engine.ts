@@ -1,4 +1,4 @@
-import type { PaperClobClient } from "../clob/PaperClobClient.js";
+import type { ClobClient } from "../clob/ClobClient.js";
 import type { PriceFeed } from "../feeds/PriceFeed.js";
 import type { Logger } from "../logging/Logger.js";
 import type { StrategyFactory } from "../strategy/Strategy.js";
@@ -11,7 +11,7 @@ export interface EngineOptions {
   /** How many windows to run before stopping. Defaults to infinite (`undefined`). */
   maxWindows?: number;
   strategyFactory: StrategyFactory;
-  clob: PaperClobClient;
+  clob: ClobClient;
   priceFeed: PriceFeed;
   logger: Logger;
   /** Optional callback when a window settles. */

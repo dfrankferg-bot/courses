@@ -1,4 +1,4 @@
-import type { PaperClobClient } from "../clob/PaperClobClient.js";
+import type { ClobClient } from "../clob/ClobClient.js";
 import type { PriceFeed } from "../feeds/PriceFeed.js";
 import type { Logger } from "../logging/Logger.js";
 import type { Strategy, StrategyContext } from "../strategy/Strategy.js";
@@ -13,7 +13,7 @@ import type {
 export interface MarketLifecycleDeps {
   market: Market;
   strategy: Strategy;
-  clob: PaperClobClient;
+  clob: ClobClient;
   priceFeed: PriceFeed;
   logger: Logger;
   /**
@@ -31,7 +31,7 @@ export interface MarketLifecycleDeps {
 export class MarketLifecycle {
   private readonly market: Market;
   private readonly strategy: Strategy;
-  private readonly clob: PaperClobClient;
+  private readonly clob: ClobClient;
   private readonly priceFeed: PriceFeed;
   private readonly logger: Logger;
   private readonly pricer: (price: number, market: Market) => number;
@@ -77,8 +77,10 @@ export class MarketLifecycle {
   private handleTick(tick: PriceTick) {
     if (this.stopped || this.market.state !== "running") return;
     this.lastUnderlying = tick.price;
-    const upMid = this.pricer(tick.price, this.market);
-    this.clob.setMid(this.market.id, upMid);
+    if (this.clob.setMid) {
+      const upMid = this.pricer(tick.price, this.market);
+      this.clob.setMid(this.market.id, upMid);
+    }
 
     const result = this.strategy.onTick(this.context(), tick);
     if (result && typeof (result as Promise<void>).then === "function") {
@@ -113,7 +115,9 @@ export class MarketLifecycle {
 
     await this.strategy.onEnd(this.context());
 
-    const realized = this.clob.settleMarket(this.market.id, resolution);
+    const realized = this.clob.settleMarket
+      ? this.clob.settleMarket(this.market.id, resolution)
+      : 0;
     this.market.state = "settled";
 
     this.logger.info("market settled", { realized });

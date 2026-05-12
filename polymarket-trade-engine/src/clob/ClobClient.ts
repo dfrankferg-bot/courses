@@ -26,4 +26,17 @@ export interface ClobClient {
   getPosition(marketId: string, outcome: Outcome): Position | undefined;
   /** Subscribe to status changes for a single order. */
   onOrderUpdate(orderId: string, listener: (order: Order) => void): () => void;
+
+  /**
+   * Paper-only: push a synthetic UP-outcome mid into the simulated book. Real
+   * implementations have a real book and should leave this undefined.
+   */
+  setMid?(marketId: string, upMid: number): void;
+  /**
+   * Paper-only: force settle open positions at resolution. Real Polymarket
+   * markets settle automatically via Chainlink/UMA on-chain; implementations
+   * against the real CLOB should return realized PnL from their own ledger
+   * (or undefined to skip per-window PnL reporting).
+   */
+  settleMarket?(marketId: string, resolution: Outcome): number;
 }
