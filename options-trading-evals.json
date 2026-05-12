@@ -1,0 +1,31 @@
+{
+  "name": "options-trading",
+  "description": "Eval set for an options-trading reasoning skill: Greeks, payoffs, pricing, and strategy selection.",
+  "cases": [
+    {
+      "id": "iron_condor_max_profit",
+      "prompt": "I sell an iron condor on SPY: short the 450/455 call vertical and short the 440/435 put vertical, all expiring in 30 days. I collect $1.20 net credit per share. What is my max profit per contract, and at what range of underlying prices at expiration do I realize it?",
+      "expected_criteria": "Must state max profit = $120 per contract ($1.20 per share x 100) and must state that it is realized when SPY closes between 440 and 450 at expiration (both short strikes expire worthless)."
+    },
+    {
+      "id": "delta_interpretation",
+      "prompt": "My long call option has a delta of 0.62. The underlying stock just moved up by $1.00. (a) Approximately how much should the option's price change? (b) What does the 0.62 imply about the probability of the option expiring in-the-money?",
+      "expected_criteria": "Must state (a) option price increases by approximately $0.62 per share (about $62 per contract), and (b) approximate risk-neutral probability of expiring ITM is about 62%. Should caveat that delta is a rough proxy and is a risk-neutral, not real-world, probability."
+    },
+    {
+      "id": "bullish_low_iv_strategy",
+      "prompt": "I'm moderately bullish on XYZ stock over the next two months, and implied volatility is unusually low right now. Suggest one specific options strategy that fits this thesis and briefly explain why it is appropriate.",
+      "expected_criteria": "Must recommend a long-vega, bullish strategy: a long call OR a bull call (debit) spread. Reasoning must mention that low IV means cheaper option premium AND that the strategy benefits if IV rises (long vega)."
+    },
+    {
+      "id": "put_call_parity",
+      "prompt": "A non-dividend-paying stock trades at $100. A 100-strike European call expiring in 1 year trades for $8. The continuously-compounded risk-free rate is 5%. Using put-call parity, what is the fair price of the 100-strike European put?",
+      "expected_criteria": "Must apply put-call parity correctly: P = C - S + K*exp(-rT) = 8 - 100 + 100*exp(-0.05) = 8 - 100 + 95.1229 ≈ $3.12. Answer must fall in the range $3.10 to $3.15."
+    },
+    {
+      "id": "bull_call_spread_breakeven",
+      "prompt": "I buy a 50/55 bull call spread on stock ABC for a net debit of $1.80 per share. What is my breakeven price at expiration, my max profit per contract, and my max loss per contract?",
+      "expected_criteria": "Must state breakeven = $51.80 (long strike 50 + debit 1.80); max profit per contract = $320 (width 5.00 - debit 1.80 = 3.20 per share x 100); max loss per contract = $180 (debit 1.80 x 100). All three numbers must be correct."
+    }
+  ]
+}
