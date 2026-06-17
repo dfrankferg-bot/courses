@@ -1,12 +1,27 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useStore } from './store.jsx'
+import { readSharedTrip, clearShareHash } from './data/share.js'
 import Sidebar from './components/Sidebar.jsx'
 import TripView from './components/TripView.jsx'
 import EmptyState from './components/EmptyState.jsx'
 
 export default function App() {
-  const { trips } = useStore()
+  const { trips, dispatch } = useStore()
   const [activeId, setActiveId] = useState(() => trips[0]?.id ?? null)
+  const importedRef = useRef(false)
+
+  // If the app was opened via a share link, import that trip once and select it.
+  useEffect(() => {
+    if (importedRef.current) return
+    const shared = readSharedTrip()
+    if (shared) {
+      importedRef.current = true
+      const id = `trip-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
+      dispatch({ type: 'IMPORT_TRIP', id, trip: shared })
+      setActiveId(id)
+      clearShareHash()
+    }
+  }, [dispatch])
 
   // Keep a valid selection if the active trip gets deleted.
   useEffect(() => {

@@ -10,9 +10,12 @@ eye on your budget — all in the browser, with no account or backend required.
 ## Features
 
 - **Multiple trips** — create trips with a destination, dates, and an icon.
-- **Day-by-day itinerary** — days are generated from the trip dates; add,
-  edit, reorder (by time), and move stops between days.
-- **"Want to go" list** — park ideas that aren't scheduled yet, then drop them
+- **Day-by-day itinerary** — days are generated from the trip dates; add and
+  edit stops.
+- **Drag-and-drop reordering** — grab any stop and drag it to reorder within a
+  day or move it to another day (or to the "Want to go" list). Manual order is
+  saved per stop.
+- **"Want to go" list** — park ideas that aren't scheduled yet, then drag them
   onto a day later.
 - **Real place search** — type a place name to search OpenStreetMap
   (via the free Nominatim API) and add it with its address and coordinates.
@@ -20,7 +23,12 @@ eye on your budget — all in the browser, with no account or backend required.
 - **Interactive map** — every located stop shows as a category-colored pin
   (Leaflet + OpenStreetMap tiles). Hovering a stop highlights its pin and
   vice-versa; the map auto-fits to your places.
-- **Budget tracking** — give each stop a cost and the trip total updates live.
+- **Budget tracking + breakdown** — give each stop a cost and the trip total
+  updates live; click the budget chip for a per-category breakdown with bars
+  and percentages.
+- **Sharing & export** — generate a shareable link that encodes the entire
+  itinerary in the URL (opening it imports a copy, no backend), or export the
+  trip as Markdown, JSON, or a printable / PDF itinerary.
 - **Local persistence** — everything is saved to `localStorage`, so your trips
   survive a refresh. A sample Kyoto trip is included on first load.
 
@@ -61,19 +69,22 @@ wanderlog/
     ├── store.jsx             # reducer + localStorage + helpers
     ├── styles.css
     ├── data/
-    │   ├── categories.js     # place categories (emoji + color)
-    │   ├── geocode.js        # Nominatim place search
-    │   └── seed.js           # sample trip
+    │   ├── categories.js      # place categories (emoji + color)
+    │   ├── geocode.js         # Nominatim place search
+    │   ├── share.js           # share link + Markdown/JSON/print export
+    │   └── seed.js            # sample trip
     └── components/
-        ├── Sidebar.jsx       # trip switcher
-        ├── NewTripModal.jsx  # create a trip
+        ├── Sidebar.jsx        # trip switcher
+        ├── NewTripModal.jsx   # create a trip
         ├── EmptyState.jsx
-        ├── TripView.jsx      # itinerary + map split view
-        ├── TripHeader.jsx    # title, dates, budget, edit/delete
-        ├── Itinerary.jsx     # days + "want to go"
-        ├── PlaceCard.jsx     # a single stop (view/edit)
-        ├── AddPlaceForm.jsx  # search + add a place
-        └── MapPanel.jsx      # Leaflet map with pins
+        ├── TripView.jsx       # itinerary + map split view
+        ├── TripHeader.jsx     # title, dates, budget, share/edit/delete
+        ├── BudgetBreakdown.jsx# per-category budget popover
+        ├── ShareModal.jsx     # share link + export options
+        ├── Itinerary.jsx      # days + "want to go" + drag-and-drop
+        ├── PlaceCard.jsx      # a single draggable stop (view/edit)
+        ├── AddPlaceForm.jsx   # search + add a place
+        └── MapPanel.jsx       # Leaflet map with pins
 ```
 
 ## Notes

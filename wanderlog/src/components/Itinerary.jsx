@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useStore } from '../store.jsx'
 import PlaceCard from './PlaceCard.jsx'
 import AddPlaceForm from './AddPlaceForm.jsx'
@@ -11,6 +11,10 @@ function dayLabel(date, index) {
 }
 
 export default function Itinerary({ trip, days, focusId, onFocus }) {
+  const { dispatch } = useStore()
+  const [dragId, setDragId] = useState(null)
+  const [overDay, setOverDay] = useState(undefined)
+
   const byDay = useMemo(() => {
     const map = new Map()
     days.forEach((d) => map.set(d.index, []))
@@ -19,14 +23,66 @@ export default function Itinerary({ trip, days, focusId, onFocus }) {
       const key = map.has(p.dayIndex) ? p.dayIndex : null
       map.get(key).push(p)
     })
-    // Sort each day's stops by time (blank times sink to the bottom).
+    // Manual order takes priority; time and insertion order break ties.
     for (const list of map.values()) {
-      list.sort((a, b) => (a.time || '99:99').localeCompare(b.time || '99:99'))
+      list.sort(
+        (a, b) =>
+          (a.order ?? 0) - (b.order ?? 0) || (a.time || '99:99').localeCompare(b.time || '99:99')
+      )
     }
     return map
   }, [trip.places, days])
 
-  const saved = byDay.get(null) || []
+  function dropOnCard(e, targetPlace) {
+    e.preventDefault()
+    e.stopPropagation()
+    if (dragId && dragId !== targetPlace.id) {
+      dispatch({
+        type: 'MOVE_PLACE',
+        tripId: trip.id,
+        placeId: dragId,
+        dayIndex: targetPlace.dayIndex,
+        beforeId: targetPlace.id,
+      })
+    }
+    setDragId(null)
+    setOverDay(undefined)
+  }
+
+  function dropOnDay(e, dayIndex) {
+    e.preventDefault()
+    if (dragId) {
+      dispatch({ type: 'MOVE_PLACE', tripId: trip.id, placeId: dragId, dayIndex, beforeId: null })
+    }
+    setDragId(null)
+    setOverDay(undefined)
+  }
+
+  const dragProps = (dayIndex) => ({
+    onDragOver: (e) => {
+      e.preventDefault()
+      if (overDay !== dayIndex) setOverDay(dayIndex)
+    },
+    onDrop: (e) => dropOnDay(e, dayIndex),
+  })
+
+  function renderCard(p, index) {
+    return (
+      <PlaceCard
+        key={p.id}
+        trip={trip}
+        place={p}
+        index={index}
+        days={days}
+        focused={p.id === focusId}
+        onFocus={onFocus}
+        dragging={p.id === dragId}
+        onDragStart={() => setDragId(p.id)}
+        onDragEnd={() => { setDragId(null); setOverDay(undefined) }}
+        onDropOnCard={(e) => dropOnCard(e, p)}
+      />
+    )
+  }
 
   return (
     <div className="itinerary">
@@ -46,19 +102,12 @@ export default function Itinerary({ trip, days, focusId, onFocus }) {
               </div>
               <span className="day-count">{stops.length} stop{stops.length === 1 ? '' : 's'}</span>
             </div>
-            <div className="day-stops">
+            <div
+              className={'day-stops' + (overDay === d.index ? ' drag-over' : '')}
+              {...dragProps(d.index)}
+            >
               {stops.length === 0 && <p className="muted small day-empty">Nothing planned yet.</p>}
-              {stops.map((p, i) => (
-                <PlaceCard
-                  key={p.id}
-                  trip={trip}
-                  place={p}
-                  index={i + 1}
-                  days={days}
-                  focused={p.id === focusId}
-                  onFocus={onFocus}
-                />
-              ))}
+              {stops.map((p, i) => renderCard(p, i + 1))}
             </div>
             <AddPlaceForm trip={trip} dayIndex={d.index} />
           </div>
@@ -71,22 +120,16 @@ export default function Itinerary({ trip, days, focusId, onFocus }) {
             <span className="day-title">💡 Want to go</span>
             <span className="day-sub">Ideas not yet scheduled</span>
           </div>
-          <span className="day-count">{saved.length}</span>
+          <span className="day-count">{(byDay.get(null) || []).length}</span>
         </div>
-        <div className="day-stops">
-          {saved.length === 0 && (
+        <div
+          className={'day-stops' + (overDay === null ? ' drag-over' : '')}
+          {...dragProps(null)}
+        >
+          {(byDay.get(null) || []).length === 0 && (
             <p className="muted small day-empty">Add places you're considering here.</p>
           )}
-          {saved.map((p) => (
-            <PlaceCard
-              key={p.id}
-              trip={trip}
-              place={p}
-              days={days}
-              focused={p.id === focusId}
-              onFocus={onFocus}
-            />
-          ))}
+          {(byDay.get(null) || []).map((p) => renderCard(p, null))}
         </div>
         <AddPlaceForm trip={trip} dayIndex={null} />
       </div>

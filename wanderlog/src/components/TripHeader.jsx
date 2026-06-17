@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useStore } from '../store.jsx'
+import BudgetBreakdown from './BudgetBreakdown.jsx'
+import ShareModal from './ShareModal.jsx'
 
 function fmtRange(trip) {
   if (!trip.startDate) return 'No dates set'
@@ -17,6 +19,8 @@ export default function TripHeader({ trip, days, budget }) {
   const { dispatch } = useStore()
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(trip)
+  const [showBudget, setShowBudget] = useState(false)
+  const [showShare, setShowShare] = useState(false)
 
   function save() {
     dispatch({
@@ -55,10 +59,22 @@ export default function TripHeader({ trip, days, budget }) {
       </div>
 
       <div className="trip-header-side">
-        <div className="budget-chip">
-          <span className="budget-label">Budget</span>
-          <span className="budget-value">${budget.toLocaleString()}</span>
+        <div className="budget-wrap">
+          <button
+            className="budget-chip"
+            onClick={() => setShowBudget((v) => !v)}
+            title="Budget breakdown"
+          >
+            <span className="budget-label">Budget ▾</span>
+            <span className="budget-value">${budget.toLocaleString()}</span>
+          </button>
+          {showBudget && (
+            <BudgetBreakdown trip={trip} total={budget} onClose={() => setShowBudget(false)} />
+          )}
         </div>
+        <button className="btn btn-ghost" onClick={() => setShowShare(true)}>
+          Share
+        </button>
         <button className="btn btn-ghost" onClick={() => { setDraft(trip); setEditing(true) }}>
           Edit
         </button>
@@ -66,6 +82,8 @@ export default function TripHeader({ trip, days, budget }) {
           Delete
         </button>
       </div>
+
+      {showShare && <ShareModal trip={trip} onClose={() => setShowShare(false)} />}
 
       {editing && (
         <div className="modal-backdrop" onClick={() => setEditing(false)}>

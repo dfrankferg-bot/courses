@@ -2,7 +2,18 @@ import { useState } from 'react'
 import { useStore } from '../store.jsx'
 import { categoryOf, CATEGORIES, CATEGORY_KEYS } from '../data/categories.js'
 
-export default function PlaceCard({ trip, place, index, days, focused, onFocus }) {
+export default function PlaceCard({
+  trip,
+  place,
+  index,
+  days,
+  focused,
+  onFocus,
+  dragging,
+  onDragStart,
+  onDragEnd,
+  onDropOnCard,
+}) {
   const { dispatch } = useStore()
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(place)
@@ -24,16 +35,31 @@ export default function PlaceCard({ trip, place, index, days, focused, onFocus }
   }
 
   function moveTo(value) {
-    patch({ dayIndex: value === '' ? null : Number(value) })
+    dispatch({
+      type: 'MOVE_PLACE',
+      tripId: trip.id,
+      placeId: place.id,
+      dayIndex: value === '' ? null : Number(value),
+      beforeId: null,
+    })
   }
 
   return (
     <div
-      className={'place-card' + (focused ? ' focused' : '')}
+      className={'place-card' + (focused ? ' focused' : '') + (dragging ? ' dragging' : '')}
       style={{ '--cat': cat.color }}
+      draggable={!editing}
+      onDragStart={(e) => {
+        e.dataTransfer.effectAllowed = 'move'
+        onDragStart?.()
+      }}
+      onDragEnd={() => onDragEnd?.()}
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={(e) => onDropOnCard?.(e)}
       onMouseEnter={() => onFocus?.(place.id)}
       onMouseLeave={() => onFocus?.(null)}
     >
+      <span className="drag-handle" title="Drag to reorder">⠿</span>
       {index != null && <span className="place-order">{index}</span>}
       <span className="place-emoji" title={cat.label}>{cat.emoji}</span>
 

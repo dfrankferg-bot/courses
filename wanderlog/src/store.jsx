@@ -31,16 +31,62 @@ function reducer(state, action) {
       }
       return [trip, ...state]
     }
+    case 'IMPORT_TRIP': {
+      const t = action.trip || {}
+      const trip = {
+        id: action.id || uid('trip'),
+        title: t.title || 'Imported trip',
+        destination: t.destination || '',
+        emoji: t.emoji || '✈️',
+        startDate: t.startDate || '',
+        endDate: t.endDate || '',
+        center: t.center || null,
+        places: (t.places || []).map((p, i) => ({
+          ...p,
+          id: uid('place'),
+          order: p.order ?? i,
+        })),
+      }
+      return [trip, ...state]
+    }
     case 'UPDATE_TRIP':
       return state.map((t) => (t.id === action.tripId ? { ...t, ...action.patch } : t))
     case 'DELETE_TRIP':
       return state.filter((t) => t.id !== action.tripId)
     case 'ADD_PLACE':
-      return state.map((t) =>
-        t.id === action.tripId
-          ? { ...t, places: [...t.places, { id: uid('place'), ...action.place }] }
-          : t
-      )
+      return state.map((t) => {
+        if (t.id !== action.tripId) return t
+        const order = t.places.filter((p) => p.dayIndex === action.place.dayIndex).length
+        return { ...t, places: [...t.places, { id: uid('place'), order, ...action.place }] }
+      })
+    case 'MOVE_PLACE': {
+      const { tripId, placeId, dayIndex, beforeId } = action
+      return state.map((t) => {
+        if (t.id !== tripId) return t
+        const moving = t.places.find((p) => p.id === placeId)
+        if (!moving) return t
+        const target = { ...moving, dayIndex }
+        // Rebuild the ordered list for the destination day, inserting the moved place.
+        const dayList = t.places
+          .filter((p) => p.id !== placeId && p.dayIndex === dayIndex)
+          .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+        let at = dayList.length
+        if (beforeId) {
+          const idx = dayList.findIndex((p) => p.id === beforeId)
+          if (idx >= 0) at = idx
+        }
+        dayList.splice(at, 0, target)
+        const orderById = new Map(dayList.map((p, i) => [p.id, i]))
+        return {
+          ...t,
+          places: t.places.map((p) => {
+            if (p.id === placeId) return { ...target, order: orderById.get(placeId) }
+            if (orderById.has(p.id)) return { ...p, order: orderById.get(p.id) }
+            return p
+          }),
+        }
+      })
+    }
     case 'UPDATE_PLACE':
       return state.map((t) =>
         t.id === action.tripId
@@ -106,4 +152,17 @@ export function daysOfTrip(trip) {
 
 export function tripBudget(trip) {
   return (trip?.places || []).reduce((sum, p) => sum + (Number(p.cost) || 0), 0)
+}
+
+// Totals per category, sorted high → low, for the budget breakdown.
+export function budgetByCategory(trip) {
+  const totals = {}
+  for (const p of trip?.places || []) {
+    const cost = Number(p.cost) || 0
+    if (cost <= 0) continue
+    totals[p.category] = (totals[p.category] || 0) + cost
+  }
+  return Object.entries(totals)
+    .map(([category, amount]) => ({ category, amount }))
+    .sort((a, b) => b.amount - a.amount)
 }
