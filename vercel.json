@@ -1,0 +1,6 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm install --prefix wanderlog && npm run build --prefix wanderlog",
+  "outputDirectory": "wanderlog/dist",
+  "framework": null
+}
