@@ -56,6 +56,18 @@ npm run build
 npm run preview
 ```
 
+### Standalone single-file build (no install needed to *use* it)
+
+```bash
+npm run build:standalone
+```
+
+This produces `dist-standalone/index.html` — a single, fully self-contained
+file with React, Leaflet, and all styles inlined. Open it by double-clicking
+(works from `file://`, no server). The map tiles and place search need an
+internet connection at runtime; everything else runs locally and saves to the
+browser's `localStorage`.
+
 ## Project structure
 
 ```

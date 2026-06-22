@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:standalone": "vite build --mode standalone --outDir dist-standalone --emptyOutDir",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -17,6 +18,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",
-    "vite": "^5.4.2"
+    "vite": "^5.4.2",
+    "vite-plugin-singlefile": "^2.3.3"
   }
 }
