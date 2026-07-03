@@ -10,8 +10,8 @@ with an ``ANTHROPIC_API_KEY`` for full LLM reasoning, or in a deterministic
 offline mode so the workflow is demonstrable without a key.
 """
 
-from .schemas import AgentResult, Review, ProductBrief, LaunchPlan
+from .schemas import AgentResult, Review, ProductBrief, LaunchPlan, SharedContext
 
-__all__ = ["AgentResult", "Review", "ProductBrief", "LaunchPlan"]
+__all__ = ["AgentResult", "Review", "ProductBrief", "LaunchPlan", "SharedContext"]
 
 __version__ = "0.1.0"

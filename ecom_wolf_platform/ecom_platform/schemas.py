@@ -24,6 +24,38 @@ class ProductBrief:
 
 
 @dataclass
+class SharedContext:
+    """The collaboration blackboard.
+
+    A single object threaded through every agent so the decision layer is
+    *collaborative* rather than a set of isolated opinions:
+
+    * ``results`` accumulates each specialist's output as the pipeline runs, so
+      downstream agents build on upstream ones (product -> ads -> logistics).
+    * ``signals`` holds shared facts (e.g. the live demand signal, the projected
+      order volume) that any agent may read or contribute.
+    * ``flags`` collects cross-pillar concerns raised during the consensus round.
+    """
+
+    brief: "ProductBrief"
+    results: dict[str, "AgentResult"] = field(default_factory=dict)
+    signals: dict[str, Any] = field(default_factory=dict)
+    flags: list[str] = field(default_factory=list)
+    enable_live_signals: bool = False
+
+    def upstream(self, pillar_id: str) -> "AgentResult | None":
+        """Return an already-completed pillar's result, if any."""
+        return self.results.get(pillar_id)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "signals": self.signals,
+            "flags": self.flags,
+            "enable_live_signals": self.enable_live_signals,
+        }
+
+
+@dataclass
 class AgentResult:
     """What a specialized (pillar) agent produces."""
 
@@ -60,12 +92,16 @@ class LaunchPlan:
     reviews: dict[str, Review] = field(default_factory=dict)
     go_no_go: str = "PENDING"
     notes: list[str] = field(default_factory=list)
+    consensus: list[str] = field(default_factory=list)
+    signals: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "product": self.product.to_dict(),
             "go_no_go": self.go_no_go,
             "notes": self.notes,
+            "consensus": self.consensus,
+            "signals": self.signals,
             "results": {k: v.to_dict() for k, v in self.results.items()},
             "reviews": {k: v.to_dict() for k, v in self.reviews.items()},
         }

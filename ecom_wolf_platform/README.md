@@ -14,20 +14,35 @@ dependencies so the workflow is demonstrable without a key.
 User product brief
         │
         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                       ORCHESTRATOR                            │
-│   for each pillar:  specialist ──▶ reviewer ──▶ (revise loop) │
-└─────────────────────────────────────────────────────────────┘
-   │            │              │                 │
-   ▼            ▼              ▼                 ▼
-Product     Website        Advertising       Logistics
-Research    Optimization   (FB 3-2-2)        & Branding
-   \            \              /                 /
-    \────────────  Reviewer / Playbook Auditor ─┘   (checks each agent's work)
-                        │
-                        ▼
-                  GO / NO-GO launch plan
+┌──────────────────────────────────────────────────────────────────┐
+│                          ORCHESTRATOR                             │
+│  per pillar: specialist ─▶ reviewer ─▶ (revise loop)             │
+│  then: consensus round (all agents cross-check the whole plan)   │
+└──────────────────────────────────────────────────────────────────┘
+        │  reads/writes the SHARED CONTEXT (blackboard)  │
+        ▼                                                ▼
+Product ──▶ Website ──▶ Advertising ──▶ Logistics    Reviewer / Auditor
+Research     Optim.     (FB 3-2-2)      & Branding    (checks each result)
+   │ demand    │ margin    │ order-vol     │
+   │ signal    │ aware     │ projection ───┘ sizes fulfillment
+   ▼
+Google Trends (free, no key)
+        │
+        ▼
+  GO / NO-GO launch plan + consensus notes
 ```
+
+### Collaboration model
+
+The decision layer is **collaborative**, not a set of isolated opinions:
+
+- **Shared blackboard** (`SharedContext`) is threaded through every agent.
+- **Downstream dependencies**: the product agent publishes margin & net-per-unit;
+  the ads agent consumes them and publishes a projected orders/day; the logistics
+  agent sizes fulfillment (dropship vs. private-label) from that projection.
+- **Consensus round**: after all pillars run, each agent inspects the *whole*
+  plan (`peer_review`) and raises cross-pillar flags — e.g. the ads agent issues
+  a **HALT** if the product failed selection. Blocking flags force a NO-GO.
 
 ## Why it's structured this way
 
@@ -65,6 +80,10 @@ python run.py --name "Shiatsu Neck Massager" --niche wellness --price 129.99 --c
 
 # Full machine-readable plan:
 python run.py --demo --json
+
+# Validate demand with a live (free) Google Trends signal:
+pip install pytrends
+python run.py --demo --live
 ```
 
 Enable **online mode** (Claude reasons over the playbook and calls the tools):
@@ -83,23 +102,42 @@ python run.py --demo
 | `playbook/playbook.md` | Human-readable structured extraction of the PDF |
 | `playbook/playbook.json` | Machine-readable playbook the agents reason over |
 | `ecom_platform/tools.py` | Deterministic formulas & rule checks (the ground truth) |
-| `ecom_platform/agents.py` | 4 specialist agents + the reviewer |
-| `ecom_platform/orchestrator.py` | Runs the pipeline with the review/revise loop |
+| `ecom_platform/agents.py` | 4 collaborative specialists + reviewer + consensus |
+| `ecom_platform/orchestrator.py` | Pipeline with review/revise loop + consensus round |
+| `ecom_platform/demand.py` | **Free** Google Trends demand integration (no key) |
 | `ecom_platform/llm.py` | Anthropic SDK wrapper + offline fallback |
-| `ecom_platform/schemas.py` | Shared data structures |
+| `ecom_platform/schemas.py` | Shared data structures incl. `SharedContext` blackboard |
 | `run.py` | CLI entrypoint |
 | `tests/test_platform.py` | Tests for tools, agents, reviewer, orchestrator |
+
+## Integrations
+
+| Integration | Status | Cost |
+|-------------|--------|------|
+| **Google Trends** (demand validation) | ✅ wired up (`demand.py`, `--live`) | Free, no key, no account |
+| Kalodata (product research) | ⛔ not wired | Paid subscription required |
+| Shopify Admin API (store setup) | ⛔ not wired | Requires a (paid) store + app credentials |
+| Meta Marketing API (ads) | ⛔ not wired | Requires Business Manager + ad account |
+| Zendrop / CJ / DSers (fulfillment) | ⛔ not wired | Requires supplier accounts |
+
+The **Google Trends** integration is the one live data source in the playbook's
+stack that is genuinely free with no signup — so it's the one wired up. It
+replaces the hand-entered "shows demand" boolean with a real interest-over-time
+signal. Everything degrades gracefully: no `pytrends`, no network, or a rate
+limit → the platform falls back to the brief's value and keeps running.
+
+The remaining playbook tools all require paid subscriptions or vendor accounts,
+so they're intentionally left as clean seams: add a client to `demand.py`-style
+modules and expose it to the relevant agent. Per the request, nothing here needs
+payment to run.
 
 ## Scope & honest caveats
 
 This automates the **decision and planning** workflow of the playbook: it
-evaluates products, generates playbook-compliant plans per pillar, and
-cross-checks them. It does **not** place real orders or connect to Kalodata,
-Shopify, Meta, or suppliers — those integrations would need real accounts,
-credentials, and API access, and each vendor's live workflow. The architecture
-leaves a clean seam for them: give each agent real tool functions in `tools.py`
-(e.g. a Shopify Admin API client) and the same orchestration runs against live
-systems.
+validates products (now with live demand data), generates playbook-compliant
+plans per pillar, and has the agents collaborate and cross-check each other. It
+does **not** place real orders or spend real ad budget — those actions require
+the paid vendor accounts above.
 
 The playbook itself is third-party marketing material; this platform encodes its
 stated rules without endorsing its financial claims.

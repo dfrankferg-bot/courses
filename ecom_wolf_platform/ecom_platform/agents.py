@@ -1,10 +1,14 @@
 """The agents that make up the platform.
 
 Four *specialist* agents (one per playbook pillar) each produce a grounded
-recommendation for a product. A *reviewer* agent independently checks each
-specialist's work against the playbook's hard rules and either approves it or
-returns required fixes. The orchestrator wires them together with a revise loop
-so the agents genuinely check each other's work.
+recommendation, a *reviewer* agent audits each one against the playbook's hard
+rules, and — because the decision layer is collaborative — every agent shares a
+common :class:`SharedContext` blackboard:
+
+  * downstream agents read upstream results (product -> ads -> logistics), so
+    e.g. the logistics plan is driven by the ad team's projected order volume;
+  * after the pipeline, every agent joins a **consensus round** (``peer_review``)
+    where it inspects the whole plan and raises cross-pillar concerns.
 
 Each agent works in two modes:
   * online  -> Claude reasons over the playbook and calls the deterministic tools
@@ -20,8 +24,9 @@ from pathlib import Path
 from typing import Any
 
 from . import tools
+from .demand import fetch_demand_signal
 from .llm import LLM
-from .schemas import AgentResult, ProductBrief, Review
+from .schemas import AgentResult, ProductBrief, Review, SharedContext
 
 _PLAYBOOK_PATH = Path(__file__).resolve().parent.parent / "playbook" / "playbook.json"
 
@@ -68,28 +73,65 @@ class Agent:
             max_tokens=900,
         )
 
-    # Subclasses implement run().
-    def run(self, brief: ProductBrief, feedback: list[str] | None = None) -> AgentResult:
+    def run(self, brief: ProductBrief, ctx: SharedContext | None = None,
+            feedback: list[str] | None = None) -> AgentResult:
+        """Produce this pillar's recommendation. Subclasses implement."""
         raise NotImplementedError
+
+    def peer_review(self, ctx: SharedContext) -> list[str]:
+        """Consensus round: inspect the whole plan, raise cross-pillar concerns.
+
+        Default: no concerns. Specialists override to flag inconsistencies with
+        other pillars' work.
+        """
+        return []
 
 
 # --------------------------------------------------------------------------- #
-# Pillar 1 — Product research
+# Pillar 1 — Product research (owns the shared demand signal)
 # --------------------------------------------------------------------------- #
 class ProductResearchAgent(Agent):
     pillar_id = "product_selection"
     role = "Product Research Specialist"
 
-    def run(self, brief: ProductBrief, feedback: list[str] | None = None) -> AgentResult:
+    def _resolve_demand(self, brief: ProductBrief, ctx: SharedContext | None) -> tuple[bool, str]:
+        """Validate demand with a live Google Trends signal when enabled.
+
+        Returns (shows_demand, note) and publishes the signal to the blackboard.
+        """
+        shows_demand = brief.shows_demand
+        if ctx is None or not ctx.enable_live_signals:
+            return shows_demand, "Demand from brief (live validation disabled)."
+
+        signal = ctx.signals.get("demand")
+        if signal is None:
+            keyword = brief.name or brief.niche
+            signal = fetch_demand_signal(keyword)
+            ctx.signals["demand"] = signal
+
+        if signal.get("available") and signal.get("has_data"):
+            shows_demand = bool(signal["shows_demand"])
+            return shows_demand, (
+                f"Google Trends: avg interest {signal['avg_interest']}, "
+                f"trend {signal['trend']} -> demand "
+                f"{'CONFIRMED' if shows_demand else 'WEAK'}."
+            )
+        reason = signal.get("reason", "unavailable")
+        return shows_demand, f"Live demand unavailable ({reason}); used brief value."
+
+    def run(self, brief: ProductBrief, ctx: SharedContext | None = None,
+            feedback: list[str] | None = None) -> AgentResult:
+        shows_demand, demand_note = self._resolve_demand(brief, ctx)
+
         evaluation = tools.evaluate_product(
             name=brief.name,
             selling_price=brief.selling_price,
             cogs=brief.cogs,
             solves_problem=brief.solves_problem,
-            shows_demand=brief.shows_demand,
+            shows_demand=shows_demand,
             aov=brief.aov,
         )
-        recs: list[str] = []
+        recs: list[str] = [demand_note]
         for check in evaluation["checks"]:
             if not check["passed"]:
                 recs.append(f"FIX: {check['detail']}")
@@ -102,14 +144,19 @@ class ProductResearchAgent(Agent):
         else:
             recs.append("Do not proceed until all 4 winner criteria pass.")
 
+        # Publish shared facts other agents depend on.
+        if ctx is not None:
+            ctx.signals["profit_margin"] = evaluation["profit_margin"]
+            ctx.signals["net_per_unit"] = round(
+                (brief.aov or brief.selling_price) - brief.cogs, 2
+            )
+
         summary = self._llm_summary(
             f"Evaluate this product brief and give a go/no-go with reasoning:\n"
-            f"{json.dumps(brief.to_dict(), indent=2)}"
+            f"{json.dumps(brief.to_dict(), indent=2)}\nDemand note: {demand_note}"
         ) or (
             f"{brief.name} ({brief.niche}): margin {evaluation['profit_margin']:.0%}, "
-            f"verdict {evaluation['verdict']}. "
-            + ("Meets all winner criteria." if evaluation["is_winner"]
-               else "Fails one or more winner criteria.")
+            f"verdict {evaluation['verdict']}. {demand_note}"
         )
         return AgentResult(
             pillar=self.pillar_id,
@@ -117,6 +164,12 @@ class ProductResearchAgent(Agent):
             recommendations=recs,
             computed=evaluation,
         )
+
+    def peer_review(self, ctx: SharedContext) -> list[str]:
+        signal = ctx.signals.get("demand", {})
+        if ctx.enable_live_signals and signal.get("available") and not signal.get("has_data"):
+            return ["Product: no independent demand data found — validate before scaling ad spend."]
+        return []
 
 
 # --------------------------------------------------------------------------- #
@@ -126,11 +179,21 @@ class WebsiteOptimizationAgent(Agent):
     pillar_id = "website_optimization"
     role = "Conversion / Website Optimization Specialist"
 
-    def run(self, brief: ProductBrief, feedback: list[str] | None = None) -> AgentResult:
+    def run(self, brief: ProductBrief, ctx: SharedContext | None = None,
+            feedback: list[str] | None = None) -> AgentResult:
         checklist = self.spec["conversion_checklist"]
         recs = [f"Apply: {item}" for item in checklist]
         recs.insert(0, "Start on the Debut theme; build the product page from a "
                        "proven competitor link via an AI page builder.")
+
+        # Collaboration: tailor guidance to the product team's margin finding.
+        margin = (ctx.signals.get("profit_margin") if ctx else None)
+        if margin is not None and margin < 0.6:
+            recs.append(
+                f"Margin is thin ({margin:.0%}); prioritize funnel/AOV boosters "
+                "(bundles, upsells) so ad spend stays profitable."
+            )
+
         computed = {
             "target_conversion_rate": self.spec["thresholds"],
             "checklist_items": len(checklist),
@@ -147,18 +210,28 @@ class WebsiteOptimizationAgent(Agent):
 
 
 # --------------------------------------------------------------------------- #
-# Pillar 3 — Advertising
+# Pillar 3 — Advertising (projects order volume for the logistics team)
 # --------------------------------------------------------------------------- #
 class AdvertisingAgent(Agent):
     pillar_id = "online_advertising"
     role = "Paid Media / Facebook Ads Specialist"
 
-    def run(self, brief: ProductBrief, feedback: list[str] | None = None) -> AgentResult:
+    def run(self, brief: ProductBrief, ctx: SharedContext | None = None,
+            feedback: list[str] | None = None) -> AgentResult:
         structure = tools.evaluate_ad_structure(videos=3, ad_copies=2, headlines=2)
         budget = tools.evaluate_ad_budget(40.0)
-        net = (brief.aov or brief.selling_price) - brief.cogs - 50.0  # ~$50 CAC
-        net = max(net, 1.0)
+
+        # Collaboration: reuse the product team's net-per-unit if available.
+        gross = ctx.signals.get("net_per_unit") if ctx else None
+        if gross is None:
+            gross = (brief.aov or brief.selling_price) - brief.cogs
+        net = max(gross - 50.0, 1.0)  # ~$50 CAC per the playbook
         unit_math = tools.units_for_monthly_profit(brief.target_monthly_profit, net)
+
+        # Publish the projected order volume so logistics can size fulfillment.
+        if ctx is not None:
+            ctx.signals["projected_units_per_day"] = unit_math["units_per_day"]
+
         computed = {
             "launch": self.spec["launch_method"],
             "structure_valid": structure,
@@ -183,39 +256,57 @@ class AdvertisingAgent(Agent):
         )
         return AgentResult(self.pillar_id, summary, recs, computed)
 
+    def peer_review(self, ctx: SharedContext) -> list[str]:
+        product = ctx.upstream("product_selection")
+        if product and not product.computed.get("is_winner", False):
+            return ["Ads: HALT — product failed selection criteria; do not spend on ads until fixed."]
+        return []
+
 
 # --------------------------------------------------------------------------- #
-# Pillar 4 — Logistics & brand building
+# Pillar 4 — Logistics & brand building (sized by the ad team's projection)
 # --------------------------------------------------------------------------- #
 class LogisticsAgent(Agent):
     pillar_id = "logistics_brand_building"
     role = "Logistics & Fulfillment Specialist"
 
-    def run(self, brief: ProductBrief, feedback: list[str] | None = None) -> AgentResult:
-        # Assume a compliant starting posture: Zendrop dropshipping, 10-day delivery.
+    def run(self, brief: ProductBrief, ctx: SharedContext | None = None,
+            feedback: list[str] | None = None) -> AgentResult:
+        # Collaboration: size fulfillment to the ad team's projected volume.
+        projected = 5
+        if ctx is not None:
+            projected = max(1, round(ctx.signals.get("projected_units_per_day", 5)))
+
         logistics = tools.evaluate_logistics(
-            delivery_days=10, orders_per_day=5, source="Zendrop"
+            delivery_days=10, orders_per_day=projected, source="Zendrop"
         )
         computed = {
             "suppliers": self.spec["suppliers"],
             "evaluation": logistics,
+            "projected_orders_per_day": projected,
             "bulk_switch_orders_per_day": self.spec["thresholds"]["bulk_switch_orders_per_day"],
         }
         recs = [
+            f"At the projected ~{projected} orders/day: {logistics['detail']}",
             "Start dropshipping via Zendrop/CJ/DSers/AutoDS to de-risk inventory.",
             "Keep delivery <= 12 days; never fulfill from AliExpress.",
-            "At 15-20 orders/day, get a dedicated supplier contact and evaluate "
-            "private label (brands sell for 4-10x vs 1-2x for dropshipping stores).",
             "For bulk: Alibaba supplier >1yr in business, always order samples, use a 3PL.",
         ]
         summary = self._llm_summary(
-            f"Recommend a fulfillment strategy for '{brief.name}' in the "
-            f"{brief.niche} niche, from launch through the private-label transition."
+            f"Recommend a fulfillment strategy for '{brief.name}' at ~{projected} "
+            "orders/day, from launch through the private-label transition."
         ) or (
-            f"Fulfillment for {brief.name}: dropship via Zendrop (<=12d delivery), "
-            "scale to a dedicated supplier at 15-20 orders/day, then private-label."
+            f"Fulfillment for {brief.name}: dropship via Zendrop (<=12d delivery); "
+            f"{logistics['detail']}"
         )
         return AgentResult(self.pillar_id, summary, recs, computed)
+
+    def peer_review(self, ctx: SharedContext) -> list[str]:
+        me = ctx.upstream("logistics_brand_building")
+        if me and me.computed.get("evaluation", {}).get("recommend_private_label"):
+            return ["Logistics: projected volume crosses 15-20 orders/day — "
+                    "coordinate with product team on bulk/private-label sourcing."]
+        return []
 
 
 # --------------------------------------------------------------------------- #

@@ -12,7 +12,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from ecom_platform import tools
+from ecom_platform import demand, tools
 from ecom_platform.agents import (
     AdvertisingAgent,
     LogisticsAgent,
@@ -22,7 +22,7 @@ from ecom_platform.agents import (
 )
 from ecom_platform.llm import LLM
 from ecom_platform.orchestrator import Orchestrator
-from ecom_platform.schemas import ProductBrief
+from ecom_platform.schemas import ProductBrief, SharedContext
 
 
 def test_profit_margin():
@@ -117,6 +117,57 @@ def test_orchestrator_go():
 def test_orchestrator_no_go_on_bad_product():
     plan = Orchestrator(verbose=False).run(_brief(selling_price=120, cogs=90))
     assert plan.go_no_go == "NO-GO"
+
+
+# --- Collaboration ---------------------------------------------------------
+def test_advertising_publishes_projection_to_context():
+    ctx = SharedContext(brief=_brief())
+    AdvertisingAgent(LLM()).run(_brief(), ctx=ctx)
+    assert "projected_units_per_day" in ctx.signals
+
+
+def test_logistics_consumes_ad_projection():
+    """Logistics should size fulfillment from the ad team's shared projection."""
+    ctx = SharedContext(brief=_brief())
+    ctx.signals["projected_units_per_day"] = 25  # simulate high projected volume
+    result = LogisticsAgent(LLM()).run(_brief(), ctx=ctx)
+    assert result.computed["projected_orders_per_day"] == 25
+    assert result.computed["evaluation"]["recommend_private_label"] is True
+
+
+def test_consensus_flags_ads_on_failed_product():
+    """The ad agent must raise a HALT flag if the product failed selection."""
+    plan = Orchestrator(verbose=False).run(_brief(selling_price=120, cogs=90))
+    assert any("HALT" in f for f in plan.consensus)
+    assert plan.go_no_go == "NO-GO"
+
+
+def test_product_publishes_margin_signal():
+    ctx = SharedContext(brief=_brief())
+    ProductResearchAgent(LLM()).run(_brief(), ctx=ctx)
+    assert "profit_margin" in ctx.signals and "net_per_unit" in ctx.signals
+
+
+# --- Demand integration (offline / graceful fallback) ----------------------
+def test_demand_classify_rising_shows_demand():
+    r = demand._classify([10, 20, 30, 40, 55, 70])
+    assert r["has_data"] is True
+    assert r["trend"] == "rising"
+    assert r["shows_demand"] is True
+
+
+def test_demand_classify_declining_no_demand():
+    r = demand._classify([80, 70, 40, 20, 10, 5])
+    assert r["trend"] == "declining"
+    assert r["shows_demand"] is False
+
+
+def test_demand_signal_never_raises_offline():
+    # Live signals disabled -> agent must not touch the network and must fall back.
+    ctx = SharedContext(brief=_brief(), enable_live_signals=False)
+    result = ProductResearchAgent(LLM()).run(_brief(), ctx=ctx)
+    assert result.computed["is_winner"] is True
+    assert "demand" not in ctx.signals  # no fetch attempted
 
 
 if __name__ == "__main__":

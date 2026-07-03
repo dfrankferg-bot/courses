@@ -1,3 +1,8 @@
 # Only needed for ONLINE mode (Claude-backed agents).
 # The platform runs fully in OFFLINE (rule-based) mode with no dependencies.
 anthropic>=0.40.0
+
+# Only needed for the free live demand integration (run.py --live).
+# Google Trends via pytrends: no API key, no account, no cost.
+# Omit it and the platform falls back to the brief's demand flag.
+pytrends>=4.9.2

@@ -15,6 +15,10 @@ Evaluate your own product:
 Emit the full launch plan as JSON:
 
     python run.py --demo --json
+
+Validate demand with a live (free) Google Trends signal:
+
+    python run.py --demo --live
 """
 
 from __future__ import annotations
@@ -67,11 +71,17 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--no-demand", action="store_true", help="product has NO proven demand")
     parser.add_argument("--json", action="store_true", help="print the full plan as JSON")
     parser.add_argument("--quiet", action="store_true", help="suppress step-by-step logging")
+    parser.add_argument("--live", action="store_true",
+                        help="validate demand with a live Google Trends signal (needs network + pytrends)")
     args = parser.parse_args(argv)
 
     brief = build_brief(args)
     llm = LLM()
-    orch = Orchestrator(llm=llm, verbose=not args.quiet and not args.json)
+    orch = Orchestrator(
+        llm=llm,
+        verbose=not args.quiet and not args.json,
+        enable_live_signals=args.live,
+    )
     plan = orch.run(brief)
 
     if args.json:
