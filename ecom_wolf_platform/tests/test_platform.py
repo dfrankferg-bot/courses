@@ -1,0 +1,129 @@
+"""Tests for the automated platform. Run offline (no API key required):
+
+    python -m pytest ecom_wolf_platform/tests -q
+    # or, without pytest:
+    python ecom_wolf_platform/tests/test_platform.py
+"""
+
+from __future__ import annotations
+
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from ecom_platform import tools
+from ecom_platform.agents import (
+    AdvertisingAgent,
+    LogisticsAgent,
+    ProductResearchAgent,
+    ReviewerAgent,
+    WebsiteOptimizationAgent,
+)
+from ecom_platform.llm import LLM
+from ecom_platform.orchestrator import Orchestrator
+from ecom_platform.schemas import ProductBrief
+
+
+def test_profit_margin():
+    assert abs(tools.profit_margin(150, 50) - 0.6667) < 1e-3
+
+
+def test_evaluate_product_winner():
+    r = tools.evaluate_product("Massager", 150, 50, True, True)
+    assert r["is_winner"] is True
+    assert r["verdict"] == "GREENLIGHT"
+
+
+def test_evaluate_product_reject_low_margin():
+    r = tools.evaluate_product("Cheap", 120, 90, True, True)  # 25% margin
+    assert r["is_winner"] is False
+    assert any(c["name"] == "margin_>=_50%" and not c["passed"] for c in r["checks"])
+
+
+def test_evaluate_product_reject_low_price():
+    r = tools.evaluate_product("Trinket", 40, 10, True, True)  # under $100
+    assert r["is_winner"] is False
+
+
+def test_virality_check():
+    r = tools.virality_check(views=1_000_000, follower_count=5_000)
+    assert r["viral_threshold"] == 200_000
+    assert r["is_viral"] is True
+    assert tools.virality_check(500_000, 300_000)["is_viral"] is False
+
+
+def test_units_for_monthly_profit():
+    r = tools.units_for_monthly_profit(6000, 45)
+    assert round(r["units_per_day"], 1) == 4.4
+
+
+def test_logistics_rejects_aliexpress():
+    r = tools.evaluate_logistics(delivery_days=10, orders_per_day=5, source="AliExpress")
+    assert r["passes"] is False
+
+
+def test_logistics_recommends_bulk():
+    r = tools.evaluate_logistics(delivery_days=8, orders_per_day=20, source="Zendrop")
+    assert r["passes"] is True
+    assert r["recommend_private_label"] is True
+
+
+def test_ad_structure_322():
+    assert tools.evaluate_ad_structure(3, 2, 2)["follows_3_2_2"] is True
+    assert tools.evaluate_ad_structure(4, 2, 2)["follows_3_2_2"] is False
+
+
+def _brief(**kw):
+    base = dict(name="Test", niche="wellness", selling_price=150, cogs=50)
+    base.update(kw)
+    return ProductBrief(**base)
+
+
+def test_reviewer_approves_winner():
+    llm = LLM()  # offline unless key present
+    agent = ProductResearchAgent(llm)
+    result = agent.run(_brief())
+    review = ReviewerAgent(llm).review(result)
+    assert review.approved is True
+    assert review.score == 100
+
+
+def test_reviewer_rejects_loser():
+    llm = LLM()
+    agent = ProductResearchAgent(llm)
+    result = agent.run(_brief(selling_price=120, cogs=90))  # 25% margin
+    review = ReviewerAgent(llm).review(result)
+    assert review.approved is False
+    assert review.required_fixes
+
+
+def test_all_specialists_produce_recommendations():
+    llm = LLM()
+    for cls in (ProductResearchAgent, WebsiteOptimizationAgent, AdvertisingAgent, LogisticsAgent):
+        result = cls(llm).run(_brief())
+        assert result.recommendations, f"{cls.__name__} produced no recommendations"
+
+
+def test_orchestrator_go():
+    plan = Orchestrator(verbose=False).run(_brief())
+    assert plan.go_no_go == "GO"
+    assert set(plan.results) == {
+        "product_selection", "website_optimization",
+        "online_advertising", "logistics_brand_building",
+    }
+
+
+def test_orchestrator_no_go_on_bad_product():
+    plan = Orchestrator(verbose=False).run(_brief(selling_price=120, cogs=90))
+    assert plan.go_no_go == "NO-GO"
+
+
+if __name__ == "__main__":
+    funcs = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
+    passed = 0
+    for fn in funcs:
+        fn()
+        print(f"  ok  {fn.__name__}")
+        passed += 1
+    print(f"\n{passed}/{len(funcs)} tests passed.")
