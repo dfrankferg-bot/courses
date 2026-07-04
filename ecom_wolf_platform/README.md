@@ -84,6 +84,12 @@ python run.py --demo --json
 # Validate demand with a live (free) Google Trends signal:
 pip install pytrends
 python run.py --demo --live
+
+# Shareable HTML report (self-contained, opens offline, light/dark):
+python run.py --demo --report          # writes launch_report.html
+
+# Local web UI (stdlib only — no extra installs):
+python serve.py                        # open http://127.0.0.1:8321
 ```
 
 Enable **online mode** (Claude reasons over the playbook and calls the tools):
@@ -107,8 +113,10 @@ python run.py --demo
 | `ecom_platform/demand.py` | **Free** Google Trends demand integration (no key) |
 | `ecom_platform/llm.py` | Anthropic SDK wrapper + offline fallback |
 | `ecom_platform/schemas.py` | Shared data structures incl. `SharedContext` blackboard |
-| `run.py` | CLI entrypoint |
-| `tests/test_platform.py` | Tests for tools, agents, reviewer, orchestrator |
+| `ecom_platform/report.py` | Self-contained HTML launch-report renderer |
+| `run.py` | CLI entrypoint (`--report` writes the HTML report) |
+| `serve.py` | Local web UI (Python stdlib only, binds 127.0.0.1) |
+| `tests/test_platform.py` | Tests for tools, agents, reviewer, orchestrator, report |
 
 ## Integrations
 

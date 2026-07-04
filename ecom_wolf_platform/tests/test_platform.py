@@ -170,6 +170,41 @@ def test_demand_signal_never_raises_offline():
     assert "demand" not in ctx.signals  # no fetch attempted
 
 
+# --- HTML report -----------------------------------------------------------
+def test_report_renders_go_plan():
+    from ecom_platform.report import render_report
+
+    plan = Orchestrator(verbose=False).run(_brief(name="Massager <Pro>"))
+    doc = render_report(plan)
+    assert doc.startswith("<!doctype html>")
+    assert "DECISION: GO" in doc
+    assert "Massager &lt;Pro&gt;" in doc  # HTML-escaped product name
+    assert all(t in doc for t in ("Product Selection", "Website Optimization",
+                                  "Online Advertising", "Logistics"))
+
+
+def test_report_renders_nogo_with_fixes():
+    from ecom_platform.report import render_report
+
+    plan = Orchestrator(verbose=False).run(_brief(selling_price=120, cogs=90))
+    doc = render_report(plan)
+    assert "DECISION: NO-GO" in doc
+    assert "NEEDS WORK" in doc
+    assert "Required:" in doc
+
+
+def test_write_report(tmp_path=None):
+    import os
+    import tempfile
+    from ecom_platform.report import write_report
+
+    plan = Orchestrator(verbose=False).run(_brief())
+    with tempfile.TemporaryDirectory() as d:
+        path = write_report(plan, os.path.join(d, "r.html"))
+        with open(path, encoding="utf-8") as fh:
+            assert "DECISION: GO" in fh.read()
+
+
 if __name__ == "__main__":
     funcs = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
     passed = 0

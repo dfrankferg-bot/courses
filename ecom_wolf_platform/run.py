@@ -19,6 +19,11 @@ Emit the full launch plan as JSON:
 Validate demand with a live (free) Google Trends signal:
 
     python run.py --demo --live
+
+Write a shareable HTML report (opens in any browser, works offline):
+
+    python run.py --demo --report            # launch_report.html
+    python run.py --demo --report out.html
 """
 
 from __future__ import annotations
@@ -73,6 +78,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--quiet", action="store_true", help="suppress step-by-step logging")
     parser.add_argument("--live", action="store_true",
                         help="validate demand with a live Google Trends signal (needs network + pytrends)")
+    parser.add_argument("--report", nargs="?", const="launch_report.html", default=None,
+                        metavar="PATH", help="write an HTML report (default: launch_report.html)")
     args = parser.parse_args(argv)
 
     brief = build_brief(args)
@@ -86,6 +93,12 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.json:
         print(json.dumps(plan.to_dict(), indent=2))
+    if args.report:
+        from ecom_platform.report import write_report
+
+        path = write_report(plan, args.report)
+        if not args.json:
+            print(f"\nHTML report written to {path}")
     return 0 if plan.go_no_go == "GO" else 1
 
 
