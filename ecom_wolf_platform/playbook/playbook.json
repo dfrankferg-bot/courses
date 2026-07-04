@@ -1,0 +1,124 @@
+{
+  "title": "The Million Dollar E-Commerce Playbook",
+  "author": "The Ecom Wolf",
+  "source_file": "MILLION DOLLAR PLAYBOOK UPDATED.pdf",
+  "pillars": [
+    {
+      "id": "product_selection",
+      "name": "Product Selection",
+      "method": "Reverse Engineering — research backwards from what already sells",
+      "steps": [
+        "Find high-demand products via Kalodata or reverse-engineer TikTok / TikTok Shop (10k+ units sold, viral videos)",
+        "Validate pricing via Google Shopping tab (Shopify/DTC brands only; ignore Amazon/eBay/Temu)",
+        "Find COGS on Zendrop; cross-check AliExpress for estimate only",
+        "Calculate profit margin"
+      ],
+      "criteria": [
+        "Solves a real problem",
+        "Shows demand",
+        "Profit margin >= 50%",
+        "Sellable at $100+ or AOV $100+"
+      ],
+      "formulas": {
+        "profit_margin": "(selling_price - cogs) / selling_price"
+      },
+      "thresholds": {
+        "min_profit_margin": 0.5,
+        "min_price_or_aov": 100
+      }
+    },
+    {
+      "id": "website_optimization",
+      "name": "Website Optimization",
+      "goal": "Conversion rate 3-8% (industry avg ~1%)",
+      "setup": [
+        "Create Shopify store",
+        "Buy domain (GoDaddy)",
+        "Connect domain in Shopify settings",
+        "Configure shipping, collections, backend settings",
+        "Build product pages with AI page builder (PagePilot); home page in Shopify (no code)"
+      ],
+      "conversion_checklist": [
+        "Not cluttered; start with Debut theme",
+        "No pop-ups when starting",
+        "Max 3 colors",
+        "Add-to-cart goes to cart page, not straight to checkout",
+        "Crisp clear product images",
+        "Copy focuses on problems solved + benefits, not features"
+      ],
+      "thresholds": {
+        "target_conversion_rate_min": 0.03,
+        "target_conversion_rate_max": 0.08,
+        "max_colors": 3
+      }
+    },
+    {
+      "id": "online_advertising",
+      "name": "Online Advertising (Facebook first)",
+      "strategy": "Start Facebook; add Google only after $1k/day (Double Whammy)",
+      "setup": [
+        "Create Meta Business Manager",
+        "Set up Facebook Pixel"
+      ],
+      "creative_sourcing": [
+        "Use already-viral videos for the product",
+        "Kalodata: download top revenue videos, edit in CapCut/Fiverr",
+        "TikTok: 100k+ view videos, apply virality check, snaptik.com to download"
+      ],
+      "launch_method": {
+        "name": "3-2-2 ABO",
+        "videos": 3,
+        "ad_copies": 2,
+        "headlines": 2,
+        "structure": "1 campaign -> 1 broad ad set -> 3 videos, optimize for conversions"
+      },
+      "kpis": ["CPA", "ROAS", "CTR", "CPM"],
+      "formulas": {
+        "virality_threshold": "views / 5 (viral if followers < threshold)"
+      },
+      "thresholds": {
+        "start_daily_budget_min": 30,
+        "start_daily_budget_max": 50,
+        "google_unlock_daily_revenue": 1000,
+        "viral_views_divisor": 5
+      }
+    },
+    {
+      "id": "logistics_brand_building",
+      "name": "Logistics & Brand Building",
+      "phasing": "Start dropshipping; move to private label/bulk at 15-20 orders/day",
+      "suppliers": ["Zendrop", "CJ Dropshipping", "DSers", "AutoDS", "Alibaba (bulk)"],
+      "workflow": [
+        "Research & choose supplier by shipping time, niche, branding",
+        "Create account, explore catalog",
+        "Source in-niche products; compare prices",
+        "Integrate with store",
+        "Customize & list products",
+        "Automate fulfillment (AutoDS/DSers)",
+        "Monitor reliability, shipping, quality",
+        "Communicate & build supplier relationships"
+      ],
+      "rules": [
+        "Get dedicated supplier contact at 15-20 orders/day",
+        "Never source fulfillment from AliExpress",
+        "Delivery <= 12 days",
+        "Bulk supplier > 1 year in business; always get samples",
+        "Use a 3PL for bulk (no warehouse needed)"
+      ],
+      "thresholds": {
+        "bulk_switch_orders_per_day": 15,
+        "max_delivery_days": 12
+      },
+      "economics": {
+        "dropshipping_multiple": "1-2x revenue",
+        "brand_multiple": "4-10x+ revenue",
+        "example_net_per_unit": 45
+      }
+    }
+  ],
+  "global_formulas": {
+    "profit_margin": "(price - cogs) / price",
+    "virality_threshold": "views / 5",
+    "units_for_monthly_profit": "target_profit / (net_per_unit * 30)"
+  }
+}
