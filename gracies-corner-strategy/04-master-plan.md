@@ -66,11 +66,21 @@ Because you chose fictional characters and AI music, your IP stack is inverted f
 
 1. **Form the LLC** (single holding LLC now; per-brand subsidiaries only when a brand gets licensing interest). Assign into it: YouTube channels, AdSense, DistroKid, Suno subscription, socials, all IP. ~$100–800 depending on state + registered agent.
 2. **Suno Premier under the LLC** from day one. Archive a dated PDF of the ToS at signup and at every change (they are actively rewriting terms post-Warner-deal). Never generate release content on a free account.
-3. **Trademark knockout searches** on Channel A + B names/characters; file Class 41 on both brands (~$1,400 for 2 brands × 2 marks). A trademark attorney for filing runs ~$500–1,000/mark if you want belt-and-suspenders; DIY filing is viable for clean names.
-4. **Contractor template** (before hiring anyone): work-for-hire + present-tense assignment + moral-rights waiver + AI-use disclosure warranty. Have a lawyer draft once (~$500–1,500); reuse forever.
+3. **Trademark knockout searches** on Channel A + B names/characters; file Class 41 on both brands (~$1,400 for 2 brands × 2 marks). DIY filing via USPTO TEAS is the default: use pre-approved descriptions from the USPTO ID Manual (the main DIY failure mode is writing your own), and if a name is anywhere near an existing kids' brand, pick a different name rather than litigate the question.
+4. **Contractor template** (before hiring anyone): start from an established template — the magic ingredients are work-for-hire language **+** present-tense assignment ("hereby assigns") **+** moral-rights waiver **+** AI-use disclosure warranty. Reuse forever; lawyer review deferred to the first serious contractor relationship.
 5. **COPPA posture:** every video designated **Made for Kids**. No owned website with analytics/email targeting kids; your web presence targets *parents* only ("resources for parents," merch). No child data collected anywhere. This keeps you out of operator territory under the 2025 COPPA amendments.
 6. **Platform disclosures:** AI-disclosure checkbox on every DistroKid release; YouTube AI label toggled (cheap insurance even though stylized animation is technically exempt).
 7. **ASCAP or BMI**: writer memberships for you/partner + publisher entity for the LLC.
+
+### DIY-first, lawyer-on-trigger
+
+Nearly everything above is self-serve: LLC formation (state portal), EIN (free at irs.gov — never pay a third party), single-member operating agreement (standard template), PRO signup, USCO registrations (the online portal is built for self-filers; follow the published AI disclosure guidance — "Material Excluded: AI-generated audio," claim the human lyrics/elements), trademark searches and TEAS filings, and all COPPA/platform compliance (pure settings and process). True upfront legal cost ≈ state LLC fee + ~$700 in trademark filings + ~$65/quarter in copyright batches.
+
+Legal spend is **event-driven, not upfront**. The triggers that actually justify a lawyer:
+- **Partner joins as co-owner** → real operating agreement (money between two people is exactly where templates fail).
+- **Trademark office action** (examiner objects) → one-time response help (~$300–800).
+- **First serious contractor/studio relationship** → one review of the template in use.
+- **Licensing, merch, or streamer interest** → absolutely counsel territory — and revenue-funded by then.
 
 ### Your "aggressive" posture — what it means in practice
 You chose to ship Suno masters everywhere platforms allow. That's workable **if and only if** the hedges are automatic:
@@ -309,4 +319,4 @@ The automation is also on trial: **trend-memo precision** (what fraction of reco
 ---
 
 *Companion docs: [01-market-research.md](01-market-research.md) · [02-legal-and-monetization.md](02-legal-and-monetization.md) · [03-production-pipeline.md](03-production-pipeline.md)*
-*Nothing here is legal advice — have a lawyer review the LLC/trademark/contractor setup (bounded, one-time cost).*
+*Nothing here is legal advice. The setup is DIY-first (see §3); bring in a lawyer on the specific triggers listed there rather than as an upfront cost.*
