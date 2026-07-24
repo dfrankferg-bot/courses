@@ -21,7 +21,24 @@
 | Snoozle | 🔴 RED | Identical-name kids YouTube channel claiming Snoozle® registered mark; plush-toy conflicts |
 | Glowbies | 🔴 RED | Existing animated preschool TV series (CBC Kids) with its own YouTube channel |
 
-**Recommendation: Drowsy Dot.** Cleanest clearance on the entire list, suggestive rather than descriptive (strong mark), and the mascot logic is built in — "Dot" is the high-contrast character the whole channel revolves around, which is exactly the Hey Bear playbook (character → plush → licensing). Backups in order: Wobble & Hum, Mellow Meadow.
+### Round 2 candidates
+
+| Name | Verdict | Key finding |
+|---|---|---|
+| **Blinkabee** | 🟢 GREEN | Fully coined, zero conflicts (nearest: a chatbot abandoned in 2018); a bee is a *natively black-and-yellow high-contrast mascot* — the best mascot fit in the set |
+| **Humdrop** | 🟢 GREEN | Coined, clean (only a dormant SoundCloud handle); "Hum the Drop" is a simple high-contrast character |
+| **Cloudlet Cove** | 🟢 GREEN | Zero exact hits; best *world-building* name (ensemble of little cloud characters), though the "Cloud ___" baby family narrows the merch moat |
+| **Dozydale** | 🟢 GREEN | Completely open field; lovely sleepy-valley world-name; mild UK "dozy" slang footnote |
+| Glimmerpond | 🟡 YELLOW | Clean for Class 41, but glimmerpond.com is held by an apparel seller (Class 25 friction) |
+| Moonbop | 🟡 YELLOW (strong) | One letter from Moonbug (CoComelon's owner) + KIDZ BOP echo — well-funded opposers on both flanks |
+| Nook & Cradle | 🟡 YELLOW | NOOK registered for baby sleep products; B&N NOOK looms over media classes |
+| Softsong | 🟡 YELLOW | Near-descriptive for a gentle-music channel — weak, hard-to-enforce mark |
+| The Quiet Quilt | 🟡 YELLOW | Existing Quiet Quilt™ soundproofing-blanket marks; "sensory quilt" generic drift |
+| Pebble & Moon | 🔴 RED | PEBBLE is a live baby-toy brand; "Moon" family crowded (Moon and Me, Moonbug) |
+| Snugbug Lane | 🔴 RED | Seven-plus active baby brands on "Snugbug/Snug Bug," including a toy line |
+| Starnest | 🔴 RED | Active $6M-funded music platform + music festival on the identical string |
+
+**Recommendation (both rounds): Blinkabee, with Drowsy Dot a very close second.** Blinkabee is the stronger *mark* (fanciful/coined — the widest protection) and the stronger *mascot*: a bee is inherently black-and-yellow high-contrast, which is literally the product for 0–18-month vision — "Blinka the Bee dancing to lo-fi" is a channel bible in four words. Drowsy Dot remains excellent (cleanest round-1 clearance, minimal-graphic mascot) and wins if you prefer the calmer, sleep-coded tone over the buzzy one. Next best: Humdrop, Wobble & Hum, Cloudlet Cove.
 
 ---
 
@@ -42,7 +59,24 @@
 | Cricket Hollow | 🔴 RED | Dominant search association is an infamous animal-cruelty zoo case; Cricket Media kids-magazine marks |
 | Dusty & Dolly's Ranch | 🔴 RED | "Dolly" → Dolly Parton (~188 marks incl. standalone DOLLY in our classes, ages-0–5 Imagination Library, active enforcement) + existing "Dolly and Friends" kids channel |
 
-**Recommendation: Boots & Banjo.** Among the greens it has the best *brand mechanics*: it names two characters (a boots-wearing kid or critter + a banjo-playing sidekick — the cast designs themselves), a 2-year-old can say it, it's merch-native, and the clearance is clean with the domain apparently free. Twangleberry Farm is the legally strongest mark if you prefer maximum protectability (a coined word nobody can crowd), at the cost of being a four-syllable mouthful for toddlers. Strum & Clover is the third pick (elegant, fully unclaimed, stretches well onto merch); Yeehaw Meadow is clean and fun but "Yeehaw" is a generic exclamation, making the composite a somewhat weaker mark.
+### Round 2 candidates
+
+| Name | Verdict | Key finding |
+|---|---|---|
+| **Banjoberry** | 🟢 GREEN | Coined single word, strongest legal profile of round 2; "Berry" the banjo-strumming critter + a berry-patch spin-off cast built in |
+| **Waddle & Spur** | 🟢 GREEN | Completely clear; best duo-character name (Waddle the duckling + Spur the little rooster) |
+| **Scoot & Whistle** | 🟢 GREEN | Zero entities found anywhere; same duo mechanics, slightly softer search distinctiveness |
+| **Two-Step Meadow** | 🟢 GREEN | Clean; more place-name than character-name, slightly weaker as a mark |
+| Gingham Grove | 🟢 GREEN (light) | No entity conflicts; reads as a textile pattern; small Class 25 footnote (Matilda Jane pattern name) |
+| Fiddlefoot Farm | 🟡 YELLOW | Established Canadian CSA farm owns fiddlefootfarm.com and the handles |
+| Tater & Tune | 🟡 YELLOW | "Tater-Tot Tunes" music act on Spotify/YouTube — different genre but metadata-confusable |
+| The Bitty Barn | 🟡 YELLOW (strong) | "Little Bitty Barn" kids play venue (Class 41 overlap) + American Girl's famous Bitty Baby marks |
+| Stomp & Sprout | 🟡 YELLOW (strong) | Exact-name UK kids clothing brand (Class 25 problem); NBC's "Sprout" preschool residue |
+| Pickin' Patch | 🔴 RED | Multiple family-attraction businesses (kids' entertainment services) + semi-descriptive |
+| Rooster Ridge | 🔴 RED | Active bluegrass band — our exact genre — with the YouTube channel and handles |
+| Little Jamboree | 🔴 RED | JAMBOREE kids-apparel registrations + Gymboree near-homophone |
+
+**Recommendation (both rounds): Boots & Banjo or Banjoberry — this one's a genuine coin-flip on flavor.** Boots & Banjo has the best duo-character mechanics and instantly says "country music for kids." Banjoberry is the legally strongest option (one coined word, easiest to register and enforce across all classes) with a single-mascot-plus-ensemble structure and toddler-perfect phonetics. If you want a duo *and* maximum quirk, Waddle & Spur is the sleeper pick. Next best: Twangleberry Farm, Scoot & Whistle, Strum & Clover.
 
 ---
 
