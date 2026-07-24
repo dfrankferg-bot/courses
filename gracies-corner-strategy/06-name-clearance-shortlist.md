@@ -33,16 +33,16 @@
 | **Twangleberry Farm** | 🟢 GREEN | True coinage, zero hits anywhere — most protectable mark of all 24 (keep "Tw-" spelling; "Tangleberry" is taken) |
 | **Yeehaw Meadow** | 🟢 GREEN | Empty field, no exact/near matches; domain/handles look excellent (screen YEE HAW Brewing's apparel reg. before Class 25) |
 | Strum & Clover | 🟢 GREEN | Clear as combined mark; don't design the Clover character as a bunny (Sofia the First's rabbit "Clover") |
-| Banjo Barnyard | 🟡 YELLOW-GREEN | Clear but both words descriptive (weaker mark); avoid reversed order (old Mattel "Barnyard Banjo" toy) |
+| Banjo Barnyard | 🟡 YELLOW (strong) | Mattel sold a kids' toy "Barnyard Banjo" (identical words reversed, our Class 28) — verify its mark is dead in TESS before considering |
 | Little Holler | 🟡 GREEN/YELLOW | Exact name clear; crowded "Holler" family (holler.country magazine, Hush & Holler kids pajamas) |
-| Tumbleweed Junction | 🟡 YELLOW | Two existing bands (one country) own the exact name in music — Spotify artist identity already occupied |
+| Tumbleweed Junction | 🔴 RED | Two existing bands (one an active country act) own the exact name in music — direct music-space conflict; Spotify artist identity already occupied |
 | Fiddle Creek Farm | 🟡 YELLOW | No entertainment conflict but multiple real farms + retailer owns fiddlecreekfarms.com |
 | Willow Creek Wranglers | 🟡 YELLOW→RED | Wrangler (Kontoor) aggressively enforces in apparel — poisons the Class 25 merch path |
 | The Hootenanny Barn | 🔴 RED | "The Hootenanny" kids music channel + Hootenanny Brooklyn kids music school + Hootenanny kids instruments — space occupied |
 | Cricket Hollow | 🔴 RED | Dominant search association is an infamous animal-cruelty zoo case; Cricket Media kids-magazine marks |
 | Dusty & Dolly's Ranch | 🔴 RED | "Dolly" → Dolly Parton (~188 marks incl. standalone DOLLY in our classes, ages-0–5 Imagination Library, active enforcement) + existing "Dolly and Friends" kids channel |
 
-**Recommendation: Boots & Banjo.** Among the greens it has the best *brand mechanics*: it names two characters (a boots-wearing kid or critter + a banjo-playing sidekick — the cast designs themselves), a 2-year-old can say it, it's merch-native, and the clearance is clean with the domain apparently free. Twangleberry Farm is the legally strongest mark if you prefer maximum protectability (a coined word nobody can crowd), at the cost of being a four-syllable mouthful for toddlers. Yeehaw Meadow is the energetic third option.
+**Recommendation: Boots & Banjo.** Among the greens it has the best *brand mechanics*: it names two characters (a boots-wearing kid or critter + a banjo-playing sidekick — the cast designs themselves), a 2-year-old can say it, it's merch-native, and the clearance is clean with the domain apparently free. Twangleberry Farm is the legally strongest mark if you prefer maximum protectability (a coined word nobody can crowd), at the cost of being a four-syllable mouthful for toddlers. Strum & Clover is the third pick (elegant, fully unclaimed, stretches well onto merch); Yeehaw Meadow is clean and fun but "Yeehaw" is a generic exclamation, making the composite a somewhat weaker mark.
 
 ---
 
