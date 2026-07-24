@@ -201,6 +201,23 @@ External benchmarks for MFK retention aren't published, so baselines are **self-
 - **Shorts as demand tests:** a hook clip posted to Shorts/TikTok *before* full production is the cheapest possible market test of a song concept; completion + share rate on that clip feeds the funnel gate in B.
 - One variable per experiment, and results only count against sufficient volume (≥10K impressions for CTR reads) — the agent digest flags anything below that as "insufficient data," never as a conclusion.
 
+### 6.7 Model routing — matching model tier to task (usage/cost strategy)
+
+An always-on agent system lives or dies on routing: send every task to the top-tier model and the token bill eats the bootstrap budget; send everything to the cheap tier and the judgment-heavy work degrades. Route by **stakes and ambiguity, not volume**. Using the Claude family as the reference stack (the same logic applies if a task runs on another vendor's equivalent tier):
+
+| Tier | Models (Claude reference) | What runs here | Cadence |
+|---|---|---|---|
+| **Fast/cheap** | Haiku-class | High-volume mechanical work: metadata and tag generation, IP-logbook entries, autocomplete-mining parses, comment scans, file renaming/formatting, checklist verification, first-pass translation drafts | Continuous / per-video |
+| **Workhorse** | Sonnet-class | The weekly heartbeat: Monday trend memos, Friday analytics digests, lyric first drafts, packaging (titles/descriptions/Shorts cut lists), thumbnail briefs, routine research pulls | Daily–weekly |
+| **Top tier** | Opus/Fable-class | Judgment-heavy, low-frequency, high-stakes: quarterly strategy reviews and lane-selection decisions, legal re-verification sweeps, eval-rubric revisions, agent-prompt rewrites (the §6.6E meta-evals), channel bible/creative-direction work, anything ambiguous enough that a wrong call is expensive | Weekly at most; concentrated at monthly/quarterly checkpoints |
+
+Operating rules:
+- **Escalate, don't default.** Workhorse drafts; top tier reviews only when the stakes rule says so (a lyric draft is workhorse work; the *rubric that judges lyrics* is top-tier work).
+- **Batch the cheap tier.** Mechanical tasks run as scheduled batches (one Routine pass over the week's videos), not one-off invocations — same output, fraction of the overhead.
+- **Pin the tier per Routine.** Each scheduled Routine/agent declares its model tier explicitly in its config so costs are predictable and no job silently runs on a bigger model than it needs.
+- **Humans stay above the routing.** Model tier changes who *prepares* the work, never who *approves* it — the two taste gates (keeper selection, QC) remain human at every tier.
+- **Budget expectation:** run this way, the always-on system's LLM spend should sit in the tens-of-dollars-per-month range at Phase 1 scale — noise inside the tooling budget — with top-tier spend visible as discrete spikes at the weekly/quarterly checkpoints rather than a continuous burn.
+
 **E. Evals of the agents themselves (quarterly, alongside Loop 4)**
 
 The automation is also on trial: **trend-memo precision** (what fraction of recommended topics, when produced, beat baseline?); **lyric-draft acceptance rate** (% of agent drafts the human accepts with only minor edits); **packaging lift** (CTR of agent-written titles/descriptions vs channel baseline); **digest accuracy** (did last quarter's recommendations, where followed, outperform where ignored?). Any agent stage underperforming for two consecutive quarters gets its prompt/skill rewritten — the same retire-or-rebuild rule the templates live under. This closes the meta-loop: the system that evaluates the content is itself evaluated.
