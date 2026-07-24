@@ -154,6 +154,28 @@ You asked for a system that "works all the time" across the GPT/Claude suite wit
 
 **Realistic steady-state human time at maturity: ~10–15 hrs/week combined** for two channels (lyrics ~2h, Suno session ~1h, selection ~1h, QC ~2h, TikTok/IG creative ~3h, Channel B animation direction ~3–5h if not yet outsourced). First 8–12 weeks will be more (template building).
 
+### 6.5 Operating loops — how the system self-corrects
+
+The business is four nested loops running at different timescales. Each has a defined input, decision rule, and action — so agents can run the measurement and recommendation steps, and the human decision at each gate is a 5-minute call, not an open-ended analysis.
+
+**Loop 1 — Per-song loop (runs at day 7 and day 30 after every release)**
+- *Inputs:* first-30-seconds retention, average % watched, rewatch rate, Shorts→long-form conversion, DSP saves/playlist adds, parent comments on TikTok/IG.
+- *Decision rule:* classify every song **Hit** (top ~10% of channel on retention + rewatch), **Solid** (middle), or **Dud** (bottom ~25%).
+- *Actions:* **Hit** → sequel/remix versions, Short blitz (5–8 more cuts), Spanish translation queued, DSP single push, and at 1M views the human re-record hedge (§3). **Solid** → compilation rotation, nothing more. **Dud** → agent tags the probable failure (hook, tempo, topic, thumbnail) into the learnings log; zero further investment.
+- The learnings log is a first-class asset: every lyric brief the agent drafts must cite what the last 10 classifications said about hooks, tempo, and topics.
+
+**Loop 2 — Weekly ops loop (the production heartbeat)**
+- Monday trend memo (agent: autocomplete mining, competitor uploads, DSP chart moves) → curriculum slotting for the week's batch → generate/select/produce → Friday analytics digest (agent) → **the digest's last section is next week's recommended slate**, weighted by Loop 1 classifications. The week isn't closed until the human accepts or edits that slate — that edit is the steering wheel.
+
+**Loop 3 — Monthly format loop**
+- *Inputs:* performance by *format* (sensory loop vs rigged character vs lyric video vs compilation), thumbnail/title CTR patterns, cadence vs watch-time curve, cost-per-1K-views by format.
+- *Action:* shift next month's production mix toward the best cost-per-watch-hour format per channel; retire or rebuild any template underperforming for two consecutive months. This is where "extremely automated" earns its keep — the mix reallocates monthly on data, not habit.
+
+**Loop 4 — Quarterly strategy loop**
+- Channel-level kill/scale gates from §7 evaluated formally; decide whether the next lane (gospel/Latin/Afrobeats) or a language mirror launches this quarter; USCO group-registration batch filed; trademark portfolio reviewed against traction; **legal re-verification sweep** (agent-drafted: Suno ToS diffs, UMG/Sony v. Suno docket, YouTube/Spotify policy changes) — the mid-2026 findings in doc 02 have a shelf life, so re-verification is a scheduled loop, not a one-time note.
+
+**The compounding loop underneath all four:** every published song automatically feeds weekly compilations → monthly 1-hr compilations → the 24/7 stream → translated mirrors. Old assets keep re-entering circulation, which is why the library — not the upload — is the unit of value.
+
 ---
 
 ## 7. Financial Model (lean scenario)
