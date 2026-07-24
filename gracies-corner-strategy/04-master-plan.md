@@ -176,6 +176,35 @@ The business is four nested loops running at different timescales. Each has a de
 
 **The compounding loop underneath all four:** every published song automatically feeds weekly compilations → monthly 1-hr compilations → the 24/7 stream → translated mirrors. Old assets keep re-entering circulation, which is why the library — not the upload — is the unit of value.
 
+### 6.6 Eval logic — how quality is scored, before and after release
+
+The loops in §6.5 tell the system *what happened*. The eval layer defines *what "good" means* at every gate, so decisions are scored against rubrics and baselines instead of vibes — and so the agents themselves are graded, not just the content.
+
+**A. Pre-release evals (leading indicators, scored at each gate)**
+
+1. **Song rubric (at keeper selection).** Every Suno candidate gets scored 1–5 on six axes before it can advance: hook singability (can a 2-year-old sing it after two listens — literally test this on any available toddler); repetition density (chorus recurrence every ~20–30s); tempo in the toddler band (~90–130 BPM for active songs, <80 for sleep); parent tolerability at replay #10; curriculum fit; genre authenticity (would a genuine country/gospel/Latin listener respect the production?). Advance threshold: ≥4 on hook + no axis below 3. The agent pre-scores; the human confirms — disagreements between agent score and human pick get logged, because that delta is training data for the selection prompts.
+2. **Video QC rubric (the release gate, human-run).** Two parts: a **pass/fail safety checklist** (no dangerous-behavior depictions, no strobing/rapid cuts beyond sensory-safe pacing, character on-model, lyrics accurate, audio levels, MFK flag + disclosures set) — any fail blocks release, no overrides; and a **quality score** (hook lands inside first 10s, visual-beat sync, thumbnail readable at phone size). Quality scores get compared to eventual Loop-1 outcomes quarterly — if pre-release scores don't predict retention, the rubric itself gets revised.
+3. **Toddler panel (cheap, decisive).** Before each channel launch and for every candidate "flagship" song: 5–10 real toddlers (friends/family, parent-consented, nothing recorded or collected — no COPPA surface) watch on a phone while an adult notes look-aways, move-along/sing-along moments, and replay requests. One afternoon of this beats a month of analytics; it's the eval Gracie's and Ms. Rachel effectively ran at their kitchen tables.
+
+**B. Staged-investment funnel (each stage is an eval gate)**
+
+Never spend full production cost on an unproven song. The funnel: Suno keeper → **cheap probe** (audio-first DSP release and/or lyric-video + 2 Shorts, ~$10–30) → probe clears baseline (see C) → **full character video** ($150–600) → Loop-1 Hit → sequels/translations/re-record. Capital only follows evidence; a song can die at any gate having cost almost nothing.
+
+**C. Baselines — what numbers count as "good"**
+
+External benchmarks for MFK retention aren't published, so baselines are **self-referential and rolling**: every video is evaluated against the channel's trailing-20-video median on 30-second retention, average-percentage-watched, CTR, and rewatch rate. Loop-1 classification is percentile-based off these baselines (Hit = top decile, Dud = bottom quartile), which means the bar rises automatically as the channel improves. Network-level floors (from §7's kill/scale criteria) stay absolute: 100K monthly views per channel by month 6, break-even views by month 9.
+
+**D. Experiment logic**
+
+- **Thumbnails:** YouTube's native Test & Compare (3 variants) on every long-form upload — free, always-on A/B.
+- **Titles/hooks:** structured variation across similar videos (character-first vs topic-first titles; question vs statement hooks), tracked in the pipeline board so patterns accumulate instead of anecdotes.
+- **Shorts as demand tests:** a hook clip posted to Shorts/TikTok *before* full production is the cheapest possible market test of a song concept; completion + share rate on that clip feeds the funnel gate in B.
+- One variable per experiment, and results only count against sufficient volume (≥10K impressions for CTR reads) — the agent digest flags anything below that as "insufficient data," never as a conclusion.
+
+**E. Evals of the agents themselves (quarterly, alongside Loop 4)**
+
+The automation is also on trial: **trend-memo precision** (what fraction of recommended topics, when produced, beat baseline?); **lyric-draft acceptance rate** (% of agent drafts the human accepts with only minor edits); **packaging lift** (CTR of agent-written titles/descriptions vs channel baseline); **digest accuracy** (did last quarter's recommendations, where followed, outperform where ignored?). Any agent stage underperforming for two consecutive quarters gets its prompt/skill rewritten — the same retire-or-rebuild rule the templates live under. This closes the meta-loop: the system that evaluates the content is itself evaluated.
+
 ---
 
 ## 7. Financial Model (lean scenario)
