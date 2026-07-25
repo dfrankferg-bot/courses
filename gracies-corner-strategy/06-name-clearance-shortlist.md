@@ -1,6 +1,6 @@
 # 06 — Channel Name Clearance: Verdicts & Shortlist
 
-*Preliminary trademark knockout searches (web-level: YouTube, Spotify, USPTO aggregators, retail, social, domains) run July 24, 2026 across 24 candidate names. **This is not a legal clearance** — the finalist in each lane needs a USPTO Trademark Center (TESS) confirmation search in Classes 41/28/25 (plus sound-alikes) before filing. Domain/handle notes are search-signal only; verify at a registrar.*
+*Preliminary trademark knockout searches (web-level: YouTube, Spotify, USPTO aggregators, retail, social, domains) run July 24–25, 2026 across 72 candidate names (36 per channel, 3 rounds). **This is not a legal clearance** — the finalist in each lane needs a USPTO Trademark Center (TESS) confirmation search in Classes 41/28/25 (plus sound-alikes) before filing. Domain/handle notes are search-signal only; verify at a registrar.*
 
 ---
 
@@ -38,7 +38,24 @@
 | Snugbug Lane | 🔴 RED | Seven-plus active baby brands on "Snugbug/Snug Bug," including a toy line |
 | Starnest | 🔴 RED | Active $6M-funded music platform + music festival on the identical string |
 
-**Recommendation (both rounds): Blinkabee, with Drowsy Dot a very close second.** Blinkabee is the stronger *mark* (fanciful/coined — the widest protection) and the stronger *mascot*: a bee is inherently black-and-yellow high-contrast, which is literally the product for 0–18-month vision — "Blinka the Bee dancing to lo-fi" is a channel bible in four words. Drowsy Dot remains excellent (cleanest round-1 clearance, minimal-graphic mascot) and wins if you prefer the calmer, sleep-coded tone over the buzzy one. Next best: Humdrop, Wobble & Hum, Cloudlet Cove.
+### Round 3 candidates
+
+| Name | Verdict | Key finding |
+|---|---|---|
+| **Fawn & Flutter** | 🟢 GREEN | Zero hits across every check; strongest mascot architecture of any round — a fawn + a fluttering companion (butterfly/moth) mirrors Hey Bear's dual-mascot format directly |
+| **Slumberpuff** | 🟢 GREEN | Fully coined, nothing found anywhere; "Slumber" + "puff" telegraphs the sleep/soothing positioning better than any other candidate |
+| **Driftwing** | 🟢 GREEN | Only conflict is a dead 1965 house-trailer trademark; metaphorically nails the lo-fi/dreamy visual language |
+| Boopli | 🟡 YELLOW | No exact hit, but the "Boop" root is crowded (Boop Kids app, Boop Baby channel, Betty Boop legacy) |
+| Pip & Glow | 🟡 YELLOW | "Pip" is an active preschool character name in two franchises (Pip Ahoy!, MLP's Pipp Petals) |
+| Tippytoe Town | 🟡 YELLOW (strong) | Near-identical "Tippy Town" toy trademark (our future Class 28) + Tiptoe Giants kids music group |
+| Sway & Shine | 🟡 YELLOW | Echoes Nickelodeon's *Shimmer and Shine* title pattern; an existing kids' movement song uses nearly the same words |
+| Murmello | 🟡 YELLOW | One phoneme from MARSHMELLO, an actively enforced music-entertainment trademark |
+| Puffling Point | 🟡 YELLOW | "Puffling" is the branding hook for an established children's-book series + a nonprofit kids' nature program |
+| Bumbaloo | 🔴 RED | Exact-name active kids nursery-rhyme YouTube channels + Belgian kids franchise "Bumba" with US footprint + live BUMBA KIDS trademark filing |
+| Wimzee | 🔴 RED | Exact-name active kids' creative-classes brand (Class 41 direct hit) with its own YouTube presence |
+| The Dandelion Den | 🔴 RED | Exact-name YouTube channel making animated nursery rhymes/songs for young children — closest same-niche competitor found in any round |
+
+**Recommendation (all three rounds): Blinkabee remains the top pick, with Fawn & Flutter now a strong co-favorite.** Blinkabee wins on mascot punch (bee = native high-contrast for 0–18-month vision). Fawn & Flutter wins on the cleanest search result of any of the 36 sensory names and a built-in two-character format that's arguably even more production-ready. Drowsy Dot and Slumberpuff are both excellent sleep-coded alternatives if you want calmer over buzzy/bright. Next best: Humdrop, Driftwing, Wobble & Hum, Cloudlet Cove.
 
 ---
 
@@ -76,13 +93,39 @@
 | Rooster Ridge | 🔴 RED | Active bluegrass band — our exact genre — with the YouTube channel and handles |
 | Little Jamboree | 🔴 RED | JAMBOREE kids-apparel registrations + Gymboree near-homophone |
 
-**Recommendation (both rounds): Boots & Banjo or Banjoberry — this one's a genuine coin-flip on flavor.** Boots & Banjo has the best duo-character mechanics and instantly says "country music for kids." Banjoberry is the legally strongest option (one coined word, easiest to register and enforce across all classes) with a single-mascot-plus-ensemble structure and toddler-perfect phonetics. If you want a duo *and* maximum quirk, Waddle & Spur is the sleeper pick. Next best: Twangleberry Farm, Scoot & Whistle, Strum & Clover.
+**Round 2 pick: Boots & Banjo or Banjoberry** — a coin-flip on flavor (duo mechanics vs. single coined word). Sleeper: Waddle & Spur.
+
+### Round 3 candidates
+
+| Name | Verdict | Key finding |
+|---|---|---|
+| **Fiddlebug** | 🟢 GREEN | Fully coined portmanteau (fiddle + bug), zero conflicts anywhere — cleanest name across all 36 country candidates; a fiddle-playing cricket/firefly mascot writes itself |
+| **Bramble & Twang** | 🟢 GREEN | No conflicts found; splits naturally into two characters (a bramble critter + a twangy instrument-toting sidekick) |
+| **Do-Si-Doodle** | 🟢 GREEN | Clean as a full compound; "Doodle" alone is a diluted word across kids brands, so lean on the whole phrase |
+| Buckaroo Bend | 🟡 YELLOW | Hasbro's long-running Buckaroo game occupies the word in Class 28 (toy expansion risk); "Buckaroo" itself is generic/weak |
+| Maple & Moo | 🟡 YELLOW | An existing kids YouTube channel (Mosi + Moo) uses the identical "___ & Moo" naming pattern in the same niche |
+| Hollyhock Hills | 🟡 YELLOW | An 80+ year Indianapolis restaurant landmark with its own kids' menu owns regional recognition of the name |
+| Grits & Giggles | 🟡 YELLOW | Active YouTube channel "Giggles & Grits" (adult Southern comedy) holds the reversed phrase as a handle |
+| Bootscoot Bayou | 🟡 YELLOW | "Boot scootin'" root is crowded (Brooks & Dunn song, a theme-park ride, an apparel/entertainment brand) |
+| Sweet Pea Stampede | 🟡 YELLOW | "Sweet Pea" is one of the most crowded baby-brand terms in the US, with a documented litigation history |
+| Lasso Lane | 🟡 YELLOW | Not confusingly similar to TED LASSO in sound/meaning, but WB's fame invites extra merchandising diligence |
+| Clip & Clop | 🔴 RED | "The Clip Clop Club" — an actively licensed girls-and-horses media brand spanning books/TV/toys/apparel, our exact classes |
+| The Wiggly Wagon | 🔴 RED | The Wiggles hold "Wiggly"-prefixed marks; "Wiggly" is core to their brand identity — highest risk found in any round |
+
+**Recommendation (all three rounds): Fiddlebug is now the single cleanest name across 36 country candidates**, and it has the same single-mascot-plus-ensemble strength that made Banjoberry attractive, with an even better character hook (a fiddle-playing bug). **Boots & Banjo remains the top pick for brand mechanics** (instantly legible, best toddler-sayable duo). Bramble & Twang is a strong third if you want the duo format with maximum distinctiveness. Next best: Banjoberry, Twangleberry Farm, Waddle & Spur.
 
 ---
 
+## Overall leaderboard (all 3 rounds)
+
+| Channel | 1st | 2nd | 3rd |
+|---|---|---|---|
+| Sensory | Blinkabee | Fawn & Flutter | Drowsy Dot / Slumberpuff |
+| Country | Boots & Banjo | Fiddlebug | Bramble & Twang / Banjoberry |
+
 ## Next actions (in order)
 
-1. **You pick** one name per channel (recommendations: Drowsy Dot + Boots & Banjo).
+1. **You pick** one name per channel (top recommendations: Blinkabee + Boots & Banjo).
 2. **Same day as picking — secure everything before filing or announcing** (names are cheap to squat): .com/.tv domains, YouTube handle, TikTok, Instagram, Spotify artist name check, Gmail. ~$30 total.
 3. **TESS confirmation search** on the two finalists (tmsearch.uspto.gov, Classes 41/28/25 + phonetic variants) — 20 minutes each, DIY per the plan's §3.
 4. **File Class 41** intent-to-use applications on both ($350 each, TEAS with ID Manual descriptions).
