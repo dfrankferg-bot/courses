@@ -41,10 +41,15 @@ environment blocked most hosts and several widely-repeated figures could not be 
 | Within **3.2 percentage points** of best cloud model | **UNVERIFIED** — absent from blog, docs, and all 146 MB of source |
 | **~800×** lower marginal API cost per query | **UNVERIFIED** — same |
 | **~4×** lower latency | **UNVERIFIED** — same |
+| Energy telemetry samples at **50 ms** | **Verified in code** — `poll_interval_ms: int = 50` |
 
 The three unverified figures are attributable only to arXiv:2605.17172, which could not be
 read. They circulate widely in secondary coverage and were incorrectly attributed to the blog
 post by search engines. **Do not cite them without checking the paper.**
+
+§7.3 documents the measurement methodology behind those figures, recovered from the harness
+source. It materially qualifies them — in particular, local inference is priced at exactly zero
+and cloud energy is never measured.
 
 ### Source-to-source discrepancies
 
@@ -251,11 +256,119 @@ builds do. Knowing the other three layers exist changes where to look when quali
 
 ---
 
-## 7. Open questions
+## 7. Source deep-dive — the three portable pieces
+
+### 7.1 Trace schema — `src/openjarvis/traces/store.py`
+
+Plain SQLite, no dependencies, directly portable to Homestead's Fastify service:
+
+```sql
+CREATE TABLE traces (
+    id                    INTEGER PRIMARY KEY AUTOINCREMENT,
+    trace_id              TEXT    NOT NULL UNIQUE,
+    query                 TEXT    NOT NULL DEFAULT '',
+    agent                 TEXT    NOT NULL DEFAULT '',
+    model                 TEXT    NOT NULL DEFAULT '',
+    engine                TEXT    NOT NULL DEFAULT '',
+    result                TEXT    NOT NULL DEFAULT '',
+    outcome               TEXT,
+    feedback              REAL,
+    started_at            REAL    NOT NULL DEFAULT 0.0,
+    ended_at              REAL    NOT NULL DEFAULT 0.0,
+    total_tokens          INTEGER NOT NULL DEFAULT 0,
+    total_latency_seconds REAL    NOT NULL DEFAULT 0.0,
+    metadata              TEXT    NOT NULL DEFAULT '{}',
+    messages              TEXT    NOT NULL DEFAULT '[]'
+);
+
+CREATE TABLE trace_steps (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    trace_id         TEXT    NOT NULL,
+    step_index       INTEGER NOT NULL,
+    step_type        TEXT    NOT NULL,
+    timestamp        REAL    NOT NULL DEFAULT 0.0,
+    duration_seconds REAL    NOT NULL DEFAULT 0.0,
+    input            TEXT    NOT NULL DEFAULT '{}',
+    output           TEXT    NOT NULL DEFAULT '{}',
+    metadata         TEXT    NOT NULL DEFAULT '{}',
+    FOREIGN KEY (trace_id) REFERENCES traces(trace_id)
+);
+```
+
+Plus an FTS5 virtual table over `(trace_id, query, result, agent)` with an `AFTER INSERT`
+trigger keeping it synced — free full-text search over history at no write-path cost.
+
+**The two columns that matter for Homestead are `outcome` and `feedback`.** They are the
+designated slots for human judgment, and they are exactly what preview-before-commit already
+produces on every ingestion. Adopting this schema means the accept/edit/reject signal lands in
+a labeled column from day one rather than being reconstructed from logs later.
+
+Collection is a decorator — `TraceCollector` wraps any agent, subscribes to an event bus, and
+records steps without the agent knowing. That separation is worth copying regardless of the
+schema: instrumentation should not be threaded through business logic.
+
+### 7.2 Energy telemetry — `src/openjarvis/telemetry/`
+
+The blog's 50 ms claim is **confirmed in code**: `poll_interval_ms: int = 50` in both
+`energy_monitor.py` and `energy_apple.py`.
+
+Vendor abstraction is an ABC over four backends — `NVIDIA`, `AMD`, `APPLE`, `CPU_RAPL` — behind
+one `EnergySample` dataclass carrying total joules, mean/peak watts, utilization, memory,
+temperature, and a per-component breakdown (CPU / GPU / DRAM / ANE). Each sample records its
+own `energy_method`: `hw_counter`, `polling`, `rapl`, or `zeus`, so measured and estimated
+values stay distinguishable.
+
+*Caveat:* `energy_apple.py` computes `ane_energy_joules = energy_j * 0.05` — Apple Neural Engine
+energy is a hardcoded 5% heuristic, not a measurement.
+
+**Relevance to Homestead is indirect.** The mobile client is Expo/RN and the backend is Node —
+neither NVML nor powermetrics applies directly. The portable idea is the *shape*: one sample
+type, a recorded method field distinguishing measured from estimated, and per-request
+attribution.
+
+### 7.3 Hybrid harness methodology — how the contested numbers are produced
+
+`_prices.py` and `_energy.py` reveal the measurement methodology behind the unverified
+`3.2 points / 800× / 4×` figures. Three caveats follow directly from the source:
+
+**1. Sample size is n=500.** `_prices.py` refers to "the n=500 numbers in
+`hybrid-local-cloud-compute/docs/results.md`" — an external repo not vendored here, so the
+results file itself was not reviewable.
+
+**2. Local inference is priced at exactly zero.** The pricing table is annotated
+`# USD per million tokens, (input, output). Local models = 0.`, and `cost()` returns `0.0` for
+any unlisted model. This is defensible for the specific claim "marginal **API** cost per query"
+— there is no API bill — but it excludes hardware amortization and electricity entirely. An
+~800× ratio against a table where the denominator is defined as zero-cost is a narrower claim
+than it appears when quoted without the word "API".
+
+**3. Cloud energy is never measured.** Quoting `_energy.py` directly:
+
+> Cloud energy is not measured — cloud calls go over HTTPS to Anthropic/OpenAI/Google, no
+> measurable joules on our side. A future pass could add a per-token J/token estimate […] but
+> those numbers are vendor-opaque and uncertain — leaving as a TODO.
+
+So any local-vs-cloud *energy* comparison is one-sided by construction: local joules are
+measured, cloud joules are absent rather than zero. The authors are explicit about this in the
+source, and it is a limitation of the method, not a flaw hidden in it.
+
+Two further methodology notes: the hybrid collector samples NVML at **~2 Hz**, not the 50 ms
+used elsewhere — two different samplers with different fidelity; and energy is attributed
+**per-cell, not per-task**, because "concurrency makes per-task attribution very noisy."
+
+**Bottom line:** the harness looks methodologically honest and well-documented in-source. The
+risk is not the measurement — it is the headline figures being repeated downstream without the
+qualifiers the source attaches to them.
+
+---
+
+## 8. Open questions
 
 - **arXiv:2605.17172** — do the headline comparison figures come from trained variants? The
   shipped hybrid harness is inference-only and its README says prompted lower-bounds reach
   80–90% of headline accuracy.
+- **`hybrid-local-cloud-compute/docs/results.md`** — the authoritative n=500 results file,
+  referenced by `_prices.py` but not vendored in this repo.
 - **Groq free-tier terms** — retention and training-use policy for submitted text.
 - **Homestead source review** — this comparison rests on handoff notes. A code review could
   change the recommendations, particularly around how tightly the provider seam is drawn.
