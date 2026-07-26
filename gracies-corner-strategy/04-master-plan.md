@@ -126,7 +126,7 @@ A named human (you or partner) watches every finished video start-to-finish befo
 - Pursue YouTube Kids app inclusion the honest way: curriculum, consistent brand, human editorial control, disclosure — AI channels only get in vetted.
 
 ### Spotify/DSPs (brand surface + data)
-- DistroKid (AI disclosure on), single artist identity per channel brand. Release strategy: fewer, better tracks; target **sleep/lullaby/toddler playlists** (nightly-loop economics beat the 1,000-stream threshold); lo-fi versions of your own hits as "sleep versions" (legit, not spam — distinct arrangements).
+- DistroKid Ultimate (AI disclosure on), one DSP artist identity per channel brand — chosen over CD Baby (full AI ban) and TuneCore (rejects 100%-AI tracks) per doc 02's distributor research; note there is no direct-upload path to Spotify/Apple/Amazon for independent artists — a distributor is required infrastructure, not an optional investment. Release strategy: fewer, better tracks; target **sleep/lullaby/toddler playlists** (nightly-loop economics beat the 1,000-stream threshold); lo-fi versions of your own hits as "sleep versions" (legit, not spam — distinct arrangements).
 - PRO-registered publishing on every track = royalties that bypass the master-side threshold entirely.
 - Watch DSP data as a **signal**: songs that stream well get promoted to full video production and translation.
 
@@ -244,7 +244,7 @@ The automation is also on trial: **trend-memo precision** (what fraction of reco
 | Suno Premier | — | $30 |
 | Midjourney + Adobe CC + Hedra/misc | — | $130–230 |
 | Gen-video API budget | — | $50–150 |
-| DistroKid (unlimited, 1–2 artist entities) | — | $3–7 |
+| DistroKid Ultimate (up to 100 artist names — required from day one since each channel brand is its own DSP artist identity, and Phase 2/3 multiply that fast; Musician/Musician Plus tiers cap out at 1–2 names and get outgrown almost immediately) | — | ~$7.50 |
 | Freelance (Ch. B animation help, scaling with revenue) | Character/rig setup $500–2,000 if outsourced | $0–1,500 |
 | USCO registrations (quarterly group batches) | — | ~$20 amortized |
 | **Total** | **~$2,500–5,000** | **~$250–500 bootstrap → $800–2,000 lean** |
